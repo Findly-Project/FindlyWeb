@@ -1,3 +1,5 @@
-venv
+.venv
 secret_data
 .idea
+get_products_data/__pycache__
+get_products_data/get_pars_data/__pycache__

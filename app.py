@@ -1,5 +1,6 @@
-from quart import Quart, request, render_template
+from quart import Quart, render_template
 from configparser import ConfigParser
+import logging
 
 app = Quart(__name__)
 config = ConfigParser()
@@ -15,4 +16,13 @@ async def main_view():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.WARNING,
+                        filename='secret_data/logs.txt',
+                        filemode='a',
+                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s\n\n\n')
+
     app.run(debug=DEBUG)
+
+    logging.warning("Start Product Analyzer...")
+
+    print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting Product Analyzer..."))
