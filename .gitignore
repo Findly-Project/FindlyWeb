@@ -3,3 +3,7 @@ secret_data
 .idea
 get_products_data/__pycache__
 get_products_data/get_pars_data/__pycache__
+utils/get_pars_config/__pycache__
+utils/__pycache__
+get_products_data/middlewares/finding_best_result/__pycache__
+get_products_data/middlewares/__pycache__
