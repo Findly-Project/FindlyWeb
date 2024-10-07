@@ -33,7 +33,7 @@ def get_21vek_data(query: str) -> List[Dict[str, ...]]:
             continue
         except Exception as e:
             logging.error(e)
-
-        result_list.append(item)
+        else:
+            result_list.append(item)
 
     return result_list

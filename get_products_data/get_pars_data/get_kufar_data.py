@@ -6,7 +6,7 @@ import logging
 from utils.get_pars_config.get_kufar_pars_config import get_kufar_pars_config
 
 
-def get_kufar_data(query: str) -> List[Dict[str, ...]]:
+def get_kufar_data(query: str) -> List[Dict]:
 
     kufar_pars_config: Dict = get_kufar_pars_config()
 
@@ -27,6 +27,7 @@ def get_kufar_data(query: str) -> List[Dict[str, ...]]:
                      'name': i['subject'],
                      'image': first_part_image_part + i['images'][0]['path'],
                      'price': int(i['price_byn']) / 100}
+                result_list.append(item)
 
             except KeyError:
                 item: Dict[str, ...] = \
@@ -34,6 +35,7 @@ def get_kufar_data(query: str) -> List[Dict[str, ...]]:
                      'name': i['subject'],
                      'image': first_part_image_part + i['images'][1]['path'],
                      'price': int(i['price_byn']) / 100}
+                result_list.append(item)
 
             except Exception as e:
                 logging.error(e)
@@ -44,10 +46,6 @@ def get_kufar_data(query: str) -> List[Dict[str, ...]]:
                  'name': i['subject'],
                  'price': int(i['price_byn']) / 100}
 
-        result_list.append(item)
+            result_list.append(item)
 
     return result_list
-
-
-res = get_kufar_data('macbook pro')
-print(res)

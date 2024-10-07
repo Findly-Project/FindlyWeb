@@ -6,7 +6,7 @@ import json
 from utils.get_pars_config.get_onliner_pars_config import get_onliner_pars_config
 
 
-def get_onliner_data(query: str, page: int = 1) -> List[Dict[str]]:
+def get_onliner_data(query: str, page: int = 1) -> List[Dict]:
 
     onliner_pars_data: Dict[str, ...] = get_onliner_pars_config()
 
@@ -41,8 +41,3 @@ def get_onliner_data(query: str, page: int = 1) -> List[Dict[str]]:
             logging.error(e)
 
     return result_list
-
-
-res = get_onliner_data('cmf phone 1', 1)
-for c in res:
-    print(c)

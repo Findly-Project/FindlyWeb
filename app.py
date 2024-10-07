@@ -1,4 +1,4 @@
-from quart import Quart, render_template
+from quart import Quart, render_template, redirect, request
 from configparser import ConfigParser
 import logging
 
@@ -12,6 +12,14 @@ DEBUG = bool(int(config['Quart']['DEBUG']))
 
 @app.route('/')
 async def main_view():
+    return redirect('search')
+
+
+@app.route('/search', methods=['POST', 'GET'])
+async def search_view():
+    if request.method == 'GET':
+        return await render_template('base.html')
+
     return await render_template('base.html')
 
 
@@ -21,8 +29,8 @@ if __name__ == '__main__':
                         filemode='a',
                         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s\n\n\n')
 
-    app.run(debug=DEBUG)
-
     logging.warning("Start Product Analyzer...")
 
     print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting Product Analyzer..."))
+
+    app.run(debug=DEBUG, host='192.168.19.105')
