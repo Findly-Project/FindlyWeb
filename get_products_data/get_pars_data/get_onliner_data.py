@@ -25,17 +25,9 @@ def get_onliner_data(query: str, page: int = 1) -> List[Dict]:
                     {'link': i['html_url'],
                      'name': i['full_name'],
                      'image': i['images']['header'],
-                     'description': i['description'],
                      'price': float(i['prices']['price_min']['amount'])}
-            else:
-                item: Dict[str, ...] = \
-                    {'link': i['html_url'],
-                     'name': i['full_name'],
-                     'image': i['images']['header'],
-                     'description': i['description'],
-                     'price': 0.0}
 
-            result_list.append(item)
+                result_list.append(item)
 
         except Exception as e:
             logging.error(e)

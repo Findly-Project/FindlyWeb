@@ -38,7 +38,3 @@ def get_mmg_data(query: str) -> List[Dict]:
             result_list.append(item)
 
     return result_list
-
-data = get_mmg_data('iphone 15')
-for x in data:
-    print(x)

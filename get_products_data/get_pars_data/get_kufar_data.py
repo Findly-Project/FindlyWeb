@@ -27,7 +27,8 @@ def get_kufar_data(query: str) -> List[Dict]:
                      'name': i['subject'],
                      'image': first_part_image_part + i['images'][0]['path'],
                      'price': int(i['price_byn']) / 100}
-                result_list.append(item)
+                if int(item['price']):
+                    result_list.append(item)
 
             except KeyError:
                 item: Dict[str, ...] = \
@@ -35,7 +36,8 @@ def get_kufar_data(query: str) -> List[Dict]:
                      'name': i['subject'],
                      'image': first_part_image_part + i['images'][1]['path'],
                      'price': int(i['price_byn']) / 100}
-                result_list.append(item)
+                if int(item['price']):
+                    result_list.append(item)
 
             except Exception as e:
                 logging.error(e)
@@ -46,6 +48,7 @@ def get_kufar_data(query: str) -> List[Dict]:
                  'name': i['subject'],
                  'price': int(i['price_byn']) / 100}
 
-            result_list.append(item)
+            if int(item['price']):
+                result_list.append(item)
 
     return result_list

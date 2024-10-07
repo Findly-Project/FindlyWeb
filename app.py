@@ -1,11 +1,9 @@
 from quart import Quart, render_template, redirect, request
-from configparser import ConfigParser
+from configobj import ConfigObj
 import logging
 
 app = Quart(__name__)
-config = ConfigParser()
-
-config.read('secret_data/config.ini')
+config = ConfigObj('secret_data/config.ini')
 
 DEBUG = bool(int(config['Quart']['DEBUG']))
 

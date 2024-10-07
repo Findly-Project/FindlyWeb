@@ -21,7 +21,7 @@ def get_21vek_data(query: str) -> List[Dict[str, ...]]:
     for i in data:
         try:
             price = i.find('span', class_='j-item-data').text
-            price = float(re.sub(r'[, ]', '', price.rstrip('0')))
+            price = float(re.sub(r' ', '', re.sub(r',', '.', price.rstrip('0'))))
 
             item: Dict[str, ...]
             item = {'link': i.find('a', class_='j-ga_track')['href'],
