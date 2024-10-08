@@ -1,10 +1,10 @@
-from configobj import ConfigObj
-from typing import Any, Dict
+import tomllib
+from typing import Dict
 
 
 def get_mmg_pars_config() -> Dict[str, ...]:
 
-    config: Any = ConfigObj('../../../secret_data/config.ini')
-    pars_mmg_config: Dict[str, ...] = config['Pars']['MMG']
+    with open('secret_data/config.toml', 'rb') as config:
+        pars_mmg_config: Dict[str, ...] = tomllib.load(config)['Pars']['MMG']
 
     return pars_mmg_config

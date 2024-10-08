@@ -1,10 +1,10 @@
-from configobj import ConfigObj
-from typing import Dict, Any
+import tomllib
+from typing import Dict
 
 
 def get_kufar_pars_config() -> Dict:
 
-    config: Any = ConfigObj('../../../secret_data/config.ini')
-    pars_kufar_config: Dict[str] = config['Pars']['Kufar']
+    with open('secret_data/config.toml', 'rb') as config:
+        pars_kufar_config: Dict[str] = tomllib.load(config)['Pars']['Kufar']
 
     return pars_kufar_config

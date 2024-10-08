@@ -1,10 +1,10 @@
-from configobj import ConfigObj
-from typing import Any, Dict
+import tomllib
+from typing import Dict
 
 
 def get_21vek_pars_config() -> Dict[str, ...]:
 
-    config: Any = ConfigObj('../../../secret_data/config.ini')
-    pars_21vek_config: Dict[str, ...] = config['Pars']['21vek']
+    with open('secret_data/config.toml', 'rb') as config:
+        pars_21vek_config: Dict[str, ...] = tomllib.load(config)['Pars']['21vek']
 
     return pars_21vek_config

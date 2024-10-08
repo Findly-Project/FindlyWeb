@@ -1,10 +1,10 @@
-from configobj import ConfigObj
-from typing import Dict, Any
+import tomllib
+from typing import Dict
 
 
 def get_onliner_pars_config() -> Dict[str, ...]:
 
-    config: Any = ConfigObj('../../../secret_data/config.ini')
-    main_api_url: Dict[str, ...] = config['Pars']['Onliner']
+    with open('secret_data/config.toml', 'rb') as config:
+        main_api_url: Dict[str, ...] = tomllib.load(config)['Pars']['Onliner']
 
     return main_api_url
