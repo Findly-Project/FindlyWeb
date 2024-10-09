@@ -29,7 +29,6 @@ def get_21vek_data(query: str) -> List[Dict[str, ...]]:
                     'image': i.find('span', class_='result__img__inner').img['src'],
                     'price': price}
         except (TypeError, AttributeError) as e:
-            logging.error(e)
             continue
         except Exception as e:
             logging.error(e)
