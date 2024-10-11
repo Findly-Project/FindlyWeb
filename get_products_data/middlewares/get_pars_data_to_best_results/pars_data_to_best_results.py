@@ -30,6 +30,3 @@ def pars_data_to_best_result(query: str) -> Dict:
             result_dict[func_name]: Tuple[Dict[str, ...]] = tuple(result_data)
 
     return result_dict
-
-
-pprint(pars_data_to_best_result('macbook pro'))

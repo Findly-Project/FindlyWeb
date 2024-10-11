@@ -1,7 +1,7 @@
 [Quart]
 DEBUG=1
 
-[Pars]
+[GetData]
     [Pars.21vek]
     main_api_url="https://www.21vek.by/search/?sa=&term={query}"
 

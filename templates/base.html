@@ -9,44 +9,18 @@
 </head>
 <body>
 
-<!-- Поле поиска -->
+{% block base %}
+<form action="/search" method="post">
 <div class="search-bar">
-    <input type="text" placeholder="Поиск...">
+    <input type="text" name="query" placeholder="Поиск...">
 </div>
-
-<div class="container">
-    {% for marketplace, ads_list in ads.items() %}
-    <div class="marketplace-container" id="marketplace-{{ marketplace }}">
-
-        <!-- Левая стрелка -->
-        <button class="arrow left" onclick="scrollAd('{{ marketplace }}', -1)">&#9664;</button>
-
-        <!-- Карточка объявления -->
-        <div class="ad-card" id="ad-{{ marketplace }}">
-            <div class="marketplace">{{ marketplace }}</div>
-            <div class="ad-number" id="ad-number-{{ marketplace }}">1</div> <!-- Изначально отображаем первый номер объявления -->
-            <a href="{{ ads_list[0]['link'] }}">
-                <img src="{{ ads_list[0]['image'] }}" alt="{{ ads_list[0]['name'] }}" class="ad-image" id="ad-image-{{ marketplace }}">
-                <div class="ad-content">
-                    <h3 id="ad-name-{{ marketplace }}">{{ ads_list[0]['name'] }}</h3>
-                    <p id="ad-price-{{ marketplace }}">{{ ads_list[0]['price'] }} BYN</p>
-                </div>
-            </a>
+ <div class="button_div">
+          <button class="button" type="submit">
+            <span class="button_text">Отправить</span>
+          </button>
         </div>
-
-        <!-- Правая стрелка -->
-        <button class="arrow right" onclick="scrollAd('{{ marketplace }}', 1)">&#9654;</button>
-    </div>
-    {% endfor %}
-</div>
-
-<!-- Подключаем JS -->
-<script src="{{ url_for('static', filename='js/base.js') }}"></script>
-
-<!-- Передаем данные в глобальную переменную -->
-<script>
-    window.ads = {{ ads|tojson }};
-</script>
+</form>
+{% endblock %}
 
 </body>
 </html>
