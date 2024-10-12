@@ -3,7 +3,6 @@ from typing import List
 
 
 def regular_expression(query: str, candidates: List[str]) -> List[str]:
-
     clear_candidates: List[str] = []
 
     for candidate in candidates:

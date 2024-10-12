@@ -4,7 +4,7 @@ from requests import Response
 from bs4 import BeautifulSoup
 import re
 import logging
-from utils.get_pars_config.get_21vek_pars_config import get_21vek_pars_config
+from backend.utils.get_pars_config.get_21vek_pars_config import get_21vek_pars_config
 
 
 def get_21vek_data(query: str) -> List[Dict[str, ...]]:

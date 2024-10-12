@@ -1,11 +1,10 @@
-from get_products_data.get_pars_data.get_kufar_data import get_kufar_data
-from get_products_data.get_pars_data.get_mmg_data import get_mmg_data
-from get_products_data.get_pars_data.get_onliner_data import get_onliner_data
-from get_products_data.get_pars_data.get_21vek_data import get_21vek_data
+from backend.get_products_data.get_pars_data.get_kufar_data import get_kufar_data
+from backend.get_products_data.get_pars_data.get_mmg_data import get_mmg_data
+from backend.get_products_data.get_pars_data.get_onliner_data import get_onliner_data
+from backend.get_products_data.get_pars_data.get_21vek_data import get_21vek_data
 from typing import Dict, List, Tuple
-from get_products_data.middlewares.finding_best_result import regular_expression
-from get_products_data.middlewares.finding_best_result import filter_for_category_based_on_price
-from pprint import pprint
+from backend.get_products_data.middlewares.finding_best_result import regular_expression
+from backend.get_products_data.middlewares.finding_best_result import filter_for_category_based_on_price
 
 
 def pars_data_to_best_result(query: str) -> Dict:

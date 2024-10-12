@@ -1,4 +1,4 @@
-.venv
+../.venv
 secret_data/logs.log
 .idea
 get_products_data/__pycache__

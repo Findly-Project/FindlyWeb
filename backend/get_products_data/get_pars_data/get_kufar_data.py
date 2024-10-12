@@ -3,7 +3,7 @@ import requests
 from requests import Response
 import json
 import logging
-from utils.get_pars_config.get_kufar_pars_config import get_kufar_pars_config
+from backend.utils.get_pars_config.get_kufar_pars_config import get_kufar_pars_config
 
 
 def get_kufar_data(query: str) -> List[Dict]:

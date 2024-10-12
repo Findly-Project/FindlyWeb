@@ -3,7 +3,7 @@ from typing import List, Dict
 import requests
 from requests import Response
 import json
-from utils.get_pars_config.get_onliner_pars_config import get_onliner_pars_config
+from backend.utils.get_pars_config.get_onliner_pars_config import get_onliner_pars_config
 
 
 def get_onliner_data(query: str, page: int = 1) -> List[Dict]:

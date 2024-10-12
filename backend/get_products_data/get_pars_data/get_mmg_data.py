@@ -3,7 +3,7 @@ import requests
 from requests import Response
 from bs4 import BeautifulSoup
 import logging
-from utils.get_pars_config.get_mmg_pars_config import get_mmg_pars_config
+from backend.utils.get_pars_config.get_mmg_pars_config import get_mmg_pars_config
 import re
 
 
