@@ -6,6 +6,7 @@ get_products_data/get_pars_data/__pycache__
 utils/get_pars_config/__pycache__
 utils/__pycache__
 get_products_data/middlewares/finding_best_result/__pycache__
+get_products_data/middlewares/get_pars_data_to_best_results/__pycache__/
 get_products_data/middlewares/__pycache__
 test.py
 
@@ -29,7 +30,7 @@ frontend/dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
