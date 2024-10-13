@@ -1,12 +1,10 @@
 # backend
-secret_data/logs.log
-get_products_data/__pycache__
-get_products_data/get_pars_data/__pycache__
-utils/get_pars_config/__pycache__
-utils/__pycache__
-get_products_data/middlewares/finding_best_result/__pycache__
-get_products_data/middlewares/get_pars_data_to_best_results/__pycache__/
-get_products_data/middlewares/__pycache__
+backend/secret_data/logs.log
+backend/get_products_data/__pycache__
+backend/utils/get_pars_config/__pycache__
+backend/utils/__pycache__
+backend/get_products_data/collecting_primary_data/__pycache__/
+backend/__pycache__
 test.py
 
 #PyCharn
