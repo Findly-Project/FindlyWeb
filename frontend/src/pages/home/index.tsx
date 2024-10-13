@@ -1,9 +1,11 @@
 import { useState } from 'react'
-import { cardsApi } from '@/shared/store/cards-api'
 import { observer } from 'mobx-react-lite'
-
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+//COMPONENTS
 import { InputAdornment, TextField } from '@mui/material'
+//MOBX
+import { cardsApi } from '@/shared/store/cards-api'
+//ICONS
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 
 export const HomePage = observer(() => {
   const { cards, fetchMarkets } = cardsApi
