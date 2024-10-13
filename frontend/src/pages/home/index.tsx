@@ -1,39 +1,45 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import { cardsApi } from '@/shared/store/cards-api'
 import { observer } from 'mobx-react-lite'
+
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import { InputAdornment, TextField } from '@mui/material'
 
 export const HomePage = observer(() => {
   const { cards, fetchMarkets } = cardsApi
 
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [inputVal, setInputVal] = useState('')
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault()
-    fetchMarkets(inputRef.current?.value as string)
+    fetchMarkets(inputVal)
   }
 
   return (
     <form onSubmit={handleSubmit}>
-      <input type="text" ref={inputRef} />
+      <TextField
+        value={inputVal}
+        onChange={e => setInputVal(e.target.value)}
+        label="Search"
+        color="secondary"
+        variant="outlined"
+        slotProps={{
+          input: {
+            endAdornment: (
+              <InputAdornment position="end">
+                <button onClick={handleSubmit}>
+                  <SearchOutlinedIcon />
+                </button>
+              </InputAdornment>
+            ),
+          },
+        }}
+        fullWidth
+      />
       <div>
         {cards?.state == 'pending' && 'loading'}
         {cards?.state == 'rejected' && 'error'}
-        {cards?.state == 'fulfilled' && (
-          <div>
-            {cards.value['21vek']?.map(card => {
-              return <p>{card.name}</p>
-            })}
-            {cards.value.Kufar?.map(card => {
-              return <p>{card.name}</p>
-            })}
-            {cards.value.MMG?.map(card => {
-              return <p>{card.name}</p>
-            })}
-            {cards.value.Onliner?.map(card => {
-              return <p>{card.name}</p>
-            })}
-          </div>
-        )}
+        {cards?.state == 'fulfilled' && <div>state is fulfilled</div>}
       </div>
     </form>
   )
