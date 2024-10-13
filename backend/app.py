@@ -1,5 +1,5 @@
 from quart import Quart, jsonify
-from get_products_data.middlewares.get_pars_data_to_best_results import pars_data_to_best_results
+from get_products_data.output_of_results import output_of_results
 import logging
 import tomllib
 
@@ -14,7 +14,7 @@ DEBUG = bool(int(config['Quart']['DEBUG']))
 @app.route('/api/v1.0/search/q=<query>', methods=['GET'])
 async def main_view(query):
     query = query.replace('+', ' ')
-    data = pars_data_to_best_results.pars_data_to_best_result(query)
+    data = output_of_results(query)
 
     return jsonify({'data': data})
 

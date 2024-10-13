@@ -1,6 +1,5 @@
-../.venv
+# backend
 secret_data/logs.log
-.idea
 get_products_data/__pycache__
 get_products_data/get_pars_data/__pycache__
 utils/get_pars_config/__pycache__
@@ -10,6 +9,9 @@ get_products_data/middlewares/get_pars_data_to_best_results/__pycache__/
 get_products_data/middlewares/__pycache__
 test.py
 
+#PyCharn
+.idea
+.venv
 
 # frontend
 
@@ -30,7 +32,6 @@ frontend/dist-ssr
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea/
 .DS_Store
 *.suo
 *.ntvs*
