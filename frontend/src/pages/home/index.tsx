@@ -6,6 +6,7 @@ import { InputAdornment, TextField } from '@mui/material'
 import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import { CardsWidget } from '@/widgets/card-list'
 
 export const HomePage = observer(() => {
   const { cards, fetchMarkets } = cardsApi
@@ -41,7 +42,12 @@ export const HomePage = observer(() => {
       <div>
         {cards?.state == 'pending' && 'loading'}
         {cards?.state == 'rejected' && 'error'}
-        {cards?.state == 'fulfilled' && <div>state is fulfilled</div>}
+        {cards?.state == 'fulfilled' && (
+          <div>
+            state is fulfilled
+            <CardsWidget />
+          </div>
+        )}
       </div>
     </form>
   )
