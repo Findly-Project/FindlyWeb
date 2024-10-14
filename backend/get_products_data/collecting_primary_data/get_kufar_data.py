@@ -28,7 +28,7 @@ def get_kufar_data(query: str) -> ProductList:
                     image=first_part_image_url + i['images'][0]['path'],
                     price=int(i['price_byn']) / 100
                 )
-                if int(i['price']):
+                if int(i['price_byn']):
                     product_list.add_product(item)
 
             except KeyError:
@@ -38,7 +38,7 @@ def get_kufar_data(query: str) -> ProductList:
                     image=first_part_image_url + i['images'][1]['path'],
                     price=int(i['price_byn']) / 100
                 )
-                if int(i['price']):
+                if int(i['price_byn']):
                     product_list.add_product(item)
 
             except Exception as e:
@@ -50,7 +50,7 @@ def get_kufar_data(query: str) -> ProductList:
                 name=i['subject'],
                 price=int(i['price_byn']) / 100
             )
-            if int(i['price']):
+            if int(i['price_byn']):
                 product_list.add_product(item)
 
     return product_list

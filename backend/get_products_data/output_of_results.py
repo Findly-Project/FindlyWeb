@@ -1,30 +1,30 @@
-from backend.get_products_data.collecting_primary_data.get_kufar_data import get_kufar_data
-from backend.get_products_data.collecting_primary_data.get_mmg_data import get_mmg_data
-from backend.get_products_data.collecting_primary_data.get_onliner_data import get_onliner_data
-from backend.get_products_data.collecting_primary_data.get_21vek_data import get_21vek_data
-from typing import Dict, List, Tuple
-from collecting_primary_data.product_models import ProductData, ProductList
+from .collecting_primary_data.get_kufar_data import get_kufar_data
+from .collecting_primary_data.get_mmg_data import get_mmg_data
+from .collecting_primary_data.get_onliner_data import get_onliner_data
+from .collecting_primary_data.get_21vek_data import get_21vek_data
+from .collecting_primary_data.product_models import ProductList, ProductData, MarketPlaceList
 from backend.get_products_data.filtering_algorithms import filter_regular_expression, filter_for_category_based_on_price
+from typing import Dict, List
 
 
-def output_of_results(query: str) -> Dict:
+def output_of_results(query: str) -> MarketPlaceList:
     get_data_functions: Dict = {'Kufar': get_kufar_data,
                                 'MMG': get_mmg_data,
                                 '21vek': get_21vek_data,
                                 'Onliner': get_onliner_data}
-    result_dict: Dict[Tuple[Dict[str]]]
+    result_dict: MarketPlaceList = MarketPlaceList()
 
     for func_name, func in get_data_functions.items():
-        pars_data: ProductList = func(query)
-        product_names: List[str] = [j['name'] for j in pars_data]
+        pars_data: ProductList | List[ProductData] = func(query)
+        product_names: List[str] = [j.name for j in pars_data]
 
         regular_expression_filter: List[str] = filter_regular_expression.regular_expression(query, product_names)
-        best_items: List[Dict[str]] = list(filter(lambda m: m['name'] in regular_expression_filter, pars_data))
-        best_items.sort(key=lambda c: c['price'])
+        best_items: List[ProductData] = ProductList().sort_by_name(regular_expression_filter, pars_data)
+        best_items.sort(key=lambda c: c.price)
 
-        result_data: List[Dict] = filter_for_category_based_on_price.filter_by_price(best_items)
+        result_data: ProductList = filter_for_category_based_on_price.filter_by_price(best_items)
 
         if result_data:
-            result_dict[func_name]: Tuple[Dict[str]] = tuple(result_data)
+            result_dict.add_list_of_products(func_name, result_data)
 
     return result_dict

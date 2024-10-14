@@ -14,7 +14,7 @@ DEBUG = bool(int(config['Quart']['DEBUG']))
 @app.route('/api/v1.0/search/q=<query>', methods=['GET'])
 async def main_view(query):
     query = query.replace('+', ' ')
-    data = output_of_results(query)
+    data = output_of_results(query).get_json()
 
     return jsonify({'data': data})
 
