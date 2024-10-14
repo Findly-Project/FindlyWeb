@@ -15,18 +15,14 @@ class ProductData:
 
 
 class ProductList:
-    def __init__(self):
-        self.products: List[ProductData] = []
+    def __init__(self, products: List[ProductData] | None = None):
+        self.products: List[ProductData] = products if products else []
 
     def add_product(self, product: ProductData):
         self.products.append(product)
 
     def del_product(self, index: int):
         self.products.pop(index)
-
-    def sort_by_name(self, names: List[str], products: List[ProductData]) -> List[ProductData]:
-        self.products = [item for item in products if item.name in names]
-        return self.products
 
     def __iter__(self):
         return iter(self.products)
@@ -41,6 +37,17 @@ class ProductList:
         return f"ProductList(products={self.products})"
 
 
+class SortProductList(ProductList):
+    @staticmethod
+    def sort_by_name(names: List[str], products: ProductList) -> ProductList:
+        products_list = [item for item in products if item.name in names]
+        return ProductList(products_list)
+
+    @staticmethod
+    def sort_by_price(products: ProductList):
+        return ProductList(sorted([item for item in products.products], key=lambda c: c.price))
+
+
 class MarketPlaceList:
     def __init__(self):
         self.list_of_products = {}
@@ -49,5 +56,14 @@ class MarketPlaceList:
         self.list_of_products[list_name] = list_data
 
     def get_json(self):
-        return self.list_of_products
-
+        output_json = {}
+        for marketplace, product_list in self.list_of_products.items():
+            items = []
+            for item in product_list.products:
+                items.append({"image": item.image,
+                              "link": item.link,
+                              "name": item.name,
+                              "price": item.price})
+            output_json[marketplace] = items
+        print(output_json)
+        return output_json

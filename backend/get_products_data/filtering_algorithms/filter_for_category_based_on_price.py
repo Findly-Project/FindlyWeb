@@ -2,7 +2,7 @@ from typing import List
 from ..collecting_primary_data.product_models import ProductList, ProductData
 
 
-def filter_by_price(candidates: List[ProductData] | ProductList) -> ProductList:
+def filter_by_price(candidates: ProductList) -> ProductList:
 
     if len(candidates) > 2:
         while True:
