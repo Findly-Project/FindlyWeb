@@ -2,7 +2,7 @@ from typing import List
 
 
 class ProductData:
-    default_image_url = 'https://грандпол.рф/core/theme/default/images/placeholder.png'
+    default_image_url = 'images/placeholder.png'
 
     def __init__(self, link: str, name: str, price: float, image: str | None = default_image_url):
         self.link = link
@@ -65,5 +65,4 @@ class MarketPlaceList:
                               "name": item.name,
                               "price": item.price})
             output_json[marketplace] = items
-        print(output_json)
         return output_json
