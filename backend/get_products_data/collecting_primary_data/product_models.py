@@ -37,7 +37,7 @@ class ProductList:
         return f"ProductList(products={self.products})"
 
 
-class SortProductList(ProductList):
+class SortProductList:
     @staticmethod
     def sort_by_name(names: List[str], products: ProductList) -> ProductList:
         products_list = [item for item in products if item.name in names]
