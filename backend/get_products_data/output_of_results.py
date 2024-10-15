@@ -7,7 +7,7 @@ from backend.get_products_data.filtering_algorithms import filter_regular_expres
 from typing import Dict, List
 
 
-def output_of_results(query: str) -> MarketPlaceList:
+async def output_of_results(query: str) -> MarketPlaceList:
     get_data_functions: Dict = {'Kufar': get_kufar_data,
                                 'MMG': get_mmg_data,
                                 '21vek': get_21vek_data,
@@ -15,7 +15,7 @@ def output_of_results(query: str) -> MarketPlaceList:
     result_dict: MarketPlaceList = MarketPlaceList()
 
     for func_name, func in get_data_functions.items():
-        pars_data: ProductList = func(query)
+        pars_data: ProductList = await func(query)
         product_names: List[str] = [j.name for j in pars_data]
 
         regular_expression_filter: List[str] = filter_regular_expression.regular_expression(query, product_names)

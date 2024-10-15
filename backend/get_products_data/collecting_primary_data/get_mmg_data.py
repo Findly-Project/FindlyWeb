@@ -1,6 +1,6 @@
 from typing import List, Dict
-import requests
-from requests import Response
+import httpx
+from httpx import Response
 from bs4 import BeautifulSoup
 import logging
 from backend.utils.get_pars_config.get_pars_config import GetParsConfig
@@ -8,14 +8,16 @@ from .product_models import ProductData, ProductList
 import re
 
 
-def get_mmg_data(query: str) -> ProductList:
-    _mmg_pars_config: Dict[str] = GetParsConfig.get_mmg_pars_config()
+async def get_mmg_data(query: str) -> ProductList:
+    mmg_pars_config: Dict[str] = GetParsConfig.get_mmg_pars_config()
 
     query: str = query.strip().replace(' ', '+')
-    first_part_url: str = 'https://mmg.by'
-    url: str = _mmg_pars_config['main_pars_url'].format(query=query)
+    first_part_url: str = mmg_pars_config['first_part_url']
+    url: str = mmg_pars_config['main_pars_url'].format(query=query)
 
-    data: Response = requests.get(url)
+    async with httpx.AsyncClient() as client:
+        data: Response = await client.get(url)
+
     soup: BeautifulSoup = BeautifulSoup(data.text, 'html.parser')
     data_soup: List = soup.find_all('div', class_='item')
 

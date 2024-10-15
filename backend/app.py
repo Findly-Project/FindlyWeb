@@ -9,14 +9,18 @@ with open('secret_data/config.toml', 'rb') as config:
 app = Quart(__name__)
 
 DEBUG = bool(int(config['Quart']['DEBUG']))
+HOST = config['Quart']['HOST']
+PORT = int(config['Quart']['PORT'])
 
 
 @app.route('/api/v1.0/search/q=<query>', methods=['GET'])
 async def main_view(query):
     query = query.replace('+', ' ')
-    data = output_of_results(query).get_json()
+    data = await output_of_results(query)
 
-    return jsonify({'data': data})
+    json_data = data.get_json()
+
+    return jsonify({'data': json_data})
 
 
 if __name__ == '__main__':
@@ -29,4 +33,4 @@ if __name__ == '__main__':
 
     print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting Product Analyzer..."))
 
-    app.run(debug=DEBUG)
+    app.run(debug=DEBUG, host=HOST, port=PORT)
