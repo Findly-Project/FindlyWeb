@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "findly"
+version = "0.9.5"
+description = "analyzer of goods on marketplaces for a key request and displays the most relevant results"
+authors = ["kolo <kolo.is.main@gmail.com>", "inlinera"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+Quart = "^0.19.6"
+bs4 = "^0.0.2"
+requests = "^2.32.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
