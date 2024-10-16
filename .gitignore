@@ -1,7 +1,7 @@
 # backend
 backend/secret_data/logs.log
 backend/get_products_data/__pycache__
-backend/utils/get_pars_config/__pycache__
+backend/utils/get_config/__pycache__
 backend/utils/__pycache__
 backend/get_products_data/collecting_primary_data/__pycache__/
 backend/get_products_data/filtering_algorithms/__pycache__/

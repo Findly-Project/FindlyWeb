@@ -1,22 +1,30 @@
-from typing import Dict, Any, BinaryIO
+from typing import Dict
 from quart import Quart, jsonify
+from quart.wrappers import Response
 from get_products_data.collecting_primary_data.product_models import MarketPlaceList
 from get_products_data.output_of_results import output_of_results
 import logging
-import tomllib
+from utils.get_config.get_quart_config import GetQuartConfig
+from middleware.reject_middlware import RejectMiddleware
 
-with open("secret_data/config.toml", "rb") as config:
-    config: Dict[str, Any] | BinaryIO = tomllib.load(config)
 
 app: Quart = Quart(__name__)
+app.asgi_app = RejectMiddleware(app.asgi_app)
 
-DEBUG: bool = bool(int(config["Quart"]["DEBUG"]))
-HOST: str = config["Quart"]["HOST"]
-PORT: int = int(config["Quart"]["PORT"])
+config: Dict = GetQuartConfig.quart_settings()
+
+DEBUG: bool = bool(int(config["DEBUG"]))
+HOST: str = config["HOST"]
+PORT: int = int(config["PORT"])
+
+
+@app.route("/")
+async def main():
+    return 'hello'
 
 
 @app.route("/api/v1.0/search/q=<query>", methods=["GET"])
-async def main_view(query):
+async def main_view(query) -> Response:
     query: str = query.replace("+", " ")
     data: MarketPlaceList = await output_of_results(query)
 
