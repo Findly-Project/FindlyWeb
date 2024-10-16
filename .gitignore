@@ -6,6 +6,7 @@ backend/utils/__pycache__
 backend/get_products_data/collecting_primary_data/__pycache__/
 backend/get_products_data/filtering_algorithms/__pycache__/
 backend/__pycache__
+backend/middleware/__pycache__/
 test.py
 
 #PyCharn
