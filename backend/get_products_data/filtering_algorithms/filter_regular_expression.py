@@ -6,8 +6,9 @@ def regular_expression(query: str, candidates: List[str]) -> List[str]:
     clear_candidates: List[str] = []
 
     for candidate in candidates:
-
-        is_best_result: bool = bool(re.match(fr'.*{query}(\s.*)?$', candidate, re.IGNORECASE))
+        is_best_result: bool = bool(
+            re.match(rf".*{query}(\s.*)?$", candidate, re.IGNORECASE)
+        )
 
         if is_best_result:
             clear_candidates.append(candidate)

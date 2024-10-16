@@ -1,33 +1,37 @@
+from typing import Dict, Any, BinaryIO
 from quart import Quart, jsonify
+from get_products_data.collecting_primary_data.product_models import MarketPlaceList
 from get_products_data.output_of_results import output_of_results
 import logging
 import tomllib
 
-with open('secret_data/config.toml', 'rb') as config:
-    config = tomllib.load(config)
+with open("secret_data/config.toml", "rb") as config:
+    config: Dict[str, Any] | BinaryIO = tomllib.load(config)
 
-app = Quart(__name__)
+app: Quart = Quart(__name__)
 
-DEBUG = bool(int(config['Quart']['DEBUG']))
-HOST = config['Quart']['HOST']
-PORT = int(config['Quart']['PORT'])
+DEBUG: bool = bool(int(config["Quart"]["DEBUG"]))
+HOST: str = config["Quart"]["HOST"]
+PORT: int = int(config["Quart"]["PORT"])
 
 
-@app.route('/api/v1.0/search/q=<query>', methods=['GET'])
+@app.route("/api/v1.0/search/q=<query>", methods=["GET"])
 async def main_view(query):
-    query = query.replace('+', ' ')
-    data = await output_of_results(query)
+    query: str = query.replace("+", " ")
+    data: MarketPlaceList = await output_of_results(query)
 
-    json_data = data.get_json()
+    json_data: Dict = data.get_json()
 
-    return jsonify({'data': json_data})
+    return jsonify({"data": json_data})
 
 
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.WARNING,
-                        filename='secret_data/logs.log',
-                        filemode='a',
-                        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s\n\n\n')
+if __name__ == "__main__":
+    logging.basicConfig(
+        level=logging.WARNING,
+        filename="secret_data/logs.log",
+        filemode="a",
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s\n\n\n",
+    )
 
     logging.warning("Start Product Analyzer...")
 
