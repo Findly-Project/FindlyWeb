@@ -1,5 +1,5 @@
 from typing import Dict
-from quart import Quart, jsonify
+from quart import Quart, jsonify, render_template
 from quart.wrappers import Response
 from get_products_data.collecting_primary_data.product_models import MarketPlaceList
 from get_products_data.output_of_results import output_of_results
@@ -9,7 +9,7 @@ from middleware.reject_middlware import RejectMiddleware
 
 
 app: Quart = Quart(__name__)
-app.asgi_app = RejectMiddleware(app.asgi_app)
+app.asgi_app = RejectMiddleware(app.asgi_app, '/api/v1.0/search/')
 
 config: Dict = GetQuartConfig.quart_settings()
 
@@ -18,9 +18,9 @@ HOST: str = config["HOST"]
 PORT: int = int(config["PORT"])
 
 
-@app.route("/")
-async def main():
-    return 'hello'
+@app.route('/unauthorized')
+async def unauthorized_view():
+    return await render_template('unauthorized_page.html')
 
 
 @app.route("/api/v1.0/search/q=<query>", methods=["GET"])
@@ -45,4 +45,6 @@ if __name__ == "__main__":
 
     print("\n\033[1m\033[30m\033[44m {} \033[0m".format("Starting Product Analyzer..."))
 
-    app.run(debug=DEBUG, host=HOST, port=PORT)
+    app.run(debug=DEBUG,
+            host=HOST,
+            port=PORT)

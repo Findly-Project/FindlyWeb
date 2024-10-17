@@ -15,7 +15,7 @@ async def get_onliner_data(query: str) -> ProductList:
     for page in range(1, 5):
         url: str = onliner_pars_data["main_api_url"].format(query=query, page=page)
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             data: Response = await client.get(url)
 
         data: Dict = json.loads(data.text)

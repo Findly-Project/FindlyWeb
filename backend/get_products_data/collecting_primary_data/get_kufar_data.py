@@ -14,7 +14,7 @@ async def get_kufar_data(query: str) -> ProductList:
     url: str = kufar_pars_config["main_pars_url"].format(query=query)
     first_part_image_url: str = kufar_pars_config["first_part_image_url"]
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         data: Response = await client.get(url)
 
     data: Dict[Any] = json.loads(data.text)

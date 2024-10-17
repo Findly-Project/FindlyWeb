@@ -15,7 +15,7 @@ async def get_21vek_data(query: str) -> ProductList:
     query: str = query.strip()
     url: str = _21vek_pars_config["main_api_url"].format(query=query)
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=10.0) as client:
         data: Response = await client.get(url)
 
     soup: BeautifulSoup = BeautifulSoup(data.text, "html.parser")
