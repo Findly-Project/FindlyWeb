@@ -40,6 +40,7 @@ export const HomePage = observer(() => {
         fullWidth
       />
       <div>
+        <CardsWidget />
         {cards?.state == 'pending' && 'loading'}
         {cards?.state == 'rejected' && 'error'}
         {cards?.state == 'fulfilled' && (
