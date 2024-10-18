@@ -8,3 +8,10 @@ export interface IMainData {
     MMG: ICard[]
   }
 }
+
+export interface IMainDataCards {
+  cards: {
+    value: IMainData
+    state: string
+  }
+}

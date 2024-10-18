@@ -1,2 +1,2 @@
-// SEARCH API 'http://127.0.0.1:5000/api/v1.0/search/q=<query>'
-export const API_URL = 'http://127.0.0.1:5000/api/v1.0/search/'
+// SEARCH API
+export const API_URL = ''
