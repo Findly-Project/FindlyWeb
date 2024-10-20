@@ -1,44 +1,18 @@
-import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
-//COMPONENTS
-import { InputAdornment, TextField } from '@mui/material'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
-//ICONS
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+//COMPONENTS
 import { CardsWidget } from '@/widgets/card-list'
+import { SearchInputUI } from '@/shared/ui/input'
 
 export const HomePage = observer(() => {
-  const { cards, fetchMarkets } = cardsApi
+  const { cards } = cardsApi
 
-  const [inputVal, setInputVal] = useState('')
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
-    e.preventDefault()
-    fetchMarkets(inputVal)
-  }
+  console.log('page rerender')
 
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField
-        value={inputVal}
-        onChange={e => setInputVal(e.target.value)}
-        label="Search"
-        color="secondary"
-        variant="outlined"
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <button onClick={handleSubmit}>
-                  <SearchOutlinedIcon />
-                </button>
-              </InputAdornment>
-            ),
-          },
-        }}
-        fullWidth
-      />
+    <div>
+      <SearchInputUI />
       <div>
         <CardsWidget />
         {cards?.state == 'pending' && 'loading'}
@@ -50,6 +24,6 @@ export const HomePage = observer(() => {
           </div>
         )}
       </div>
-    </form>
+    </div>
   )
 })
