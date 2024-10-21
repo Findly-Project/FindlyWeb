@@ -1,0 +1,24 @@
+.markets_grid {
+  position: relative;
+  width: 90vw;
+  grid-template-columns: repeat(4, 1fr);
+  text-align: center;
+}
+
+@media (max-width: 2100px) {
+  .markets_grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 1200px) {
+  .markets_grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 796px) {
+  .markets_grid {
+    grid-template-columns: 1fr;
+  }
+}

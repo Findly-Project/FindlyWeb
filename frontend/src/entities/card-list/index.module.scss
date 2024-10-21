@@ -1,0 +1,13 @@
+.cards_carousel {
+  position: relative;
+  width: inherit;
+  height: 50vh;
+  margin: 10px;
+  padding: auto;
+}
+
+@media (max-width: 796px) {
+  .cards_carousel {
+    height: 70vh;
+  }
+}

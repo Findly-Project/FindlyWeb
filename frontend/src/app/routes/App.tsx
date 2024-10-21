@@ -4,9 +4,11 @@ import { HomePage } from '@/pages/home'
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-    </Routes>
+    <div className="df jcc aic">
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+      </Routes>
+    </div>
   )
 }
 

@@ -3,19 +3,20 @@
 .card_item {
   position: relative;
   width: 25vw;
-  height: 300px;
+  max-width: 430px;
+  height: 55vh;
+  max-height: 320px;
   padding: 5px;
-  margin: 5px;
+  margin: 0 auto;
   flex-direction: column;
   justify-content: center;
   border-radius: 10px;
   background-color: $card-color;
-  * {
-    margin: auto 5px;
-  }
+  transition: all 0.3s;
+
   .card_item__info {
     * {
-      margin: 10px 3px;
+      margin: 10px 3px 0 3px;
     }
     .card_item__name {
       font-weight: 600;
@@ -26,6 +27,7 @@
       color: $red-color;
     }
   }
+
   .card_item__image {
     width: auto;
     height: 60%;
@@ -33,10 +35,14 @@
     margin: 0;
     border-radius: 5px;
   }
+  &:hover {
+    // CODE
+  }
 }
 
-@media (max-width: 798px) {
+@media (max-width: 796px) {
   .card_item {
     width: 60vw;
+    font-size: 11px;
   }
 }
