@@ -12,8 +12,11 @@ from backend.get_products_data.filtering_algorithms import (
     filter_for_category_based_on_price,
 )
 from typing import Dict, List
+from aiocache import cached
+from aiocache.serializers import PickleSerializer
 
 
+@cached(ttl=5*60, serializer=PickleSerializer())
 async def output_of_results(query: str) -> MarketPlaceList:
     get_data_functions: Dict = {
         "Kufar": get_kufar_data,
