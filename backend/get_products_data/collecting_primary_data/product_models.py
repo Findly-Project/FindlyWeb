@@ -39,9 +39,9 @@ class ProductList:
         return f"ProductList(products={self.products})"
 
 
-class SortProductList:
+class SortAndFilterProductList:
     @staticmethod
-    def sort_by_name(names: List[str], products: ProductList) -> ProductList:
+    def filter_by_name(names: List[str], products: ProductList) -> ProductList:
         products_list: List[ProductData] = [
             item for item in products if item.name in names
         ]
