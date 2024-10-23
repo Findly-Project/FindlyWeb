@@ -8,19 +8,27 @@ import { CardEntity } from '../card'
 
 interface CardListEntityProps {
   cards: ICard[]
+  name: string
 }
 
-export const CardListEntity: FC<CardListEntityProps> = ({ cards }) => {
+export const CardListEntity: FC<CardListEntityProps> = ({ cards, name }) => {
   return (
-    <Carousel
-      navButtonsAlwaysVisible
-      autoPlay={false}
-      indicators={false}
-      className={`${s.cards_carousel} df aic jcc`}
-    >
-      {cards?.map(card => (
-        <CardEntity name={card.name} price={card.price} link={card.link} image={card.image} />
-      ))}
-    </Carousel>
+    <div>
+      <h2>{name}</h2>
+      <Carousel
+        navButtonsAlwaysVisible
+        autoPlay={false}
+        className={`${s.cards_carousel} df aic jcc`}
+      >
+        {cards?.map(card => (
+          <CardEntity
+            name={card.name}
+            price={card.price}
+            link={card.link}
+            image={card.image}
+          />
+        ))}
+      </Carousel>
+    </div>
   )
 }

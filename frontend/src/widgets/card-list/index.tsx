@@ -10,10 +10,7 @@ export const CardsWidget = () => {
   return (
     <div className={`${s.markets_grid} dg jcc aic`}>
       {Object.entries(data.data).map(([key, cardList]) => (
-        <div key={key}>
-          <h1>{key}</h1>
-          <CardListEntity cards={cardList} />
-        </div>
+        <CardListEntity cards={cardList} name={key} key={key} />
       ))}
     </div>
   )
