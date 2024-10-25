@@ -14,6 +14,7 @@ from backend.get_products_data.filtering_algorithms import (
 from typing import Dict, List
 from aiocache import cached
 from aiocache.serializers import PickleSerializer
+from httpx import RemoteProtocolError, TimeoutException
 
 
 @cached(ttl=5 * 60, serializer=PickleSerializer())
@@ -27,7 +28,11 @@ async def output_of_results(query: str) -> MarketPlaceList:
     output_result_items: MarketPlaceList = MarketPlaceList()
 
     for func_name, func in get_data_functions.items():
-        pars_data: ProductList = await func(query)
+        try:
+            pars_data: ProductList = await func(query)
+        except (RemoteProtocolError, TimeoutException):
+            pars_data: ProductList = await func(query)
+
         product_names: List[str] = [j.name for j in pars_data]
 
         items_filtered_by_regular_expression: List[str] = (
