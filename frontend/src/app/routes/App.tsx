@@ -5,7 +5,7 @@ import { HeaderLayoutWidget } from '../../widgets/layout/header'
 
 function App() {
   return (
-    <div className="df fdc jcc aic">
+    <div className="df fdc jcc aic cw">
       <HeaderLayoutWidget />
       <Routes>
         <Route path="/" element={<HomePage />} />

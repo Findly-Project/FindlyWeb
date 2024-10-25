@@ -9,20 +9,22 @@
   padding: 5px;
   margin: 0 auto;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   border-radius: 10px;
   background-color: $card-color;
   transition: all 0.3s;
 
   .card_item__info {
+    margin: 5px 0;
     * {
       margin: 10px 3px 0 3px;
     }
     .card_item__name {
+      font-size: 14px;
       font-weight: 600;
     }
     .card_item__price {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       text-align: right;
       color: $red-color;

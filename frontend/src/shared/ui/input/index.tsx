@@ -1,11 +1,10 @@
+import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
+import s from './index.module.scss'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
-//COMPONENTS
-import { InputAdornment, TextField } from '@mui/material'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
-import { observer } from 'mobx-react-lite'
 
 export const SearchInputUI = observer(() => {
   const { fetchMarkets } = cardsApi
@@ -17,29 +16,18 @@ export const SearchInputUI = observer(() => {
     fetchMarkets(inputVal)
   }
 
-  console.log('input rerender')
-
   return (
-    <form onSubmit={handleSubmit}>
-      <TextField
+    <form onSubmit={handleSubmit} className={`${s.formInput} df aic`}>
+      <input
+        type="text"
         value={inputVal}
         onChange={e => setInputVal(e.target.value)}
-        label="Search"
-        color="secondary"
-        variant="outlined"
-        slotProps={{
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <button onClick={handleSubmit}>
-                  <SearchOutlinedIcon />
-                </button>
-              </InputAdornment>
-            ),
-          },
-        }}
-        fullWidth
+        placeholder="Please type product name"
+        className={s.input}
       />
+      <button className={s.input_search} onClick={handleSubmit}>
+        <SearchOutlinedIcon />
+      </button>
     </form>
   )
 })
