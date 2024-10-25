@@ -13,7 +13,7 @@ export const SearchInputUI = observer(() => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault()
-    fetchMarkets(inputVal)
+    fetchMarkets(inputVal.trim().replaceAll(' ', '+'))
   }
 
   return (
