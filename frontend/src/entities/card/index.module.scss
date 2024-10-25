@@ -2,10 +2,10 @@
 
 .card_item {
   position: relative;
-  width: 25vw;
-  max-width: 430px;
-  height: 55vh;
-  max-height: 320px;
+  width: 30vw;
+  max-width: 450px;
+  height: 65vh;
+  max-height: 350px;
   padding: 5px;
   margin: 0 auto;
   flex-direction: column;
@@ -31,13 +31,25 @@
 
   .card_item__image {
     width: auto;
-    height: 60%;
+    height: 70%;
     object-fit: contain;
     margin: 0;
     border-radius: 5px;
   }
   &:hover {
     // CODE
+  }
+}
+
+@media (max-width: 1800px) {
+  .card_item {
+    width: 26vw;
+    max-width: 430px;
+    height: 55vh;
+    max-height: 320px;
+    .card_item__image {
+      height: 60%;
+    }
   }
 }
 

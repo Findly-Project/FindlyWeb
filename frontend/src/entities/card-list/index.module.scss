@@ -1,14 +1,10 @@
-.cards_carousel {
-  position: relative;
-  width: inherit;
-  height: max-content;
-  margin: 10px;
-  padding: auto;
-  flex-direction: column;
-}
-
-@media (max-width: 796px) {
+.cards {
+  margin: 20px;
   .cards_carousel {
+    position: relative;
     height: max-content;
+    margin: 10px;
+    padding: auto;
+    flex-direction: column;
   }
 }
