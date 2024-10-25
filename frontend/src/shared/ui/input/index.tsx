@@ -5,6 +5,7 @@ import s from './index.module.scss'
 import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+import { useFormatInput } from '@/shared/hooks/useFormatInput'
 
 export const SearchInputUI = observer(() => {
   const { fetchMarkets } = cardsApi
@@ -13,7 +14,8 @@ export const SearchInputUI = observer(() => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault()
-    fetchMarkets(inputVal.trim().replaceAll(' ', '+'))
+    const query = useFormatInput(inputVal)
+    fetchMarkets(query)
   }
 
   return (
