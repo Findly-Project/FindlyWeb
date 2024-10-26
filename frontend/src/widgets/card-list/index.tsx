@@ -16,13 +16,13 @@ export const CardsWidget = observer(() => {
   if (cards?.state == 'rejected') return 'Error, please try again!'
 
   return (
-    <div className={`${s.markets_grid} dg jcc aic`}>
-      {Object.entries(cards?.value?.data).map(([key, cardList]) => (
-        <CardListEntity cards={cardList} name={key} key={key} />
-      ))}
-      <div className="df jcc aic">
-        {Object.entries(cards?.value?.data).length == 0 && <h3>Not found :(</h3>}
+    <>
+      <div className={`${s.markets_grid} dg jcc aic`}>
+        {Object.entries(cards?.value?.data).map(([key, cardList]) => (
+          <CardListEntity cards={cardList} name={key} key={key} />
+        ))}
       </div>
-    </div>
+      {Object.entries(cards?.value?.data).length == 0 && <h3>Not found :(</h3>}
+    </>
   )
 })

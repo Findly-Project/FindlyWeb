@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import s from './index.module.scss'
@@ -24,7 +25,7 @@ export const SearchInputUI = observer(() => {
         type="text"
         value={inputVal}
         onChange={e => setInputVal(e.target.value)}
-        placeholder="Please type product name"
+        placeholder="Введите название продукта"
         className={s.input}
       />
       <button className={s.input_search} onClick={handleSubmit}>
