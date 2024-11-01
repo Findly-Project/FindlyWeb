@@ -13,12 +13,12 @@ interface CardListEntityProps {
 
 export const CardListEntity: FC<CardListEntityProps> = ({ cards, name }) => {
   return (
-    <div>
+    <div className={`${s.cards}`}>
       <h2>{name}</h2>
       <Carousel
         navButtonsAlwaysVisible
         autoPlay={false}
-        className={`${s.cards_carousel} df aic jcc`}
+        className={`${s.cards_carousel} df jcc aic`}
       >
         {cards?.map(card => (
           <CardEntity
@@ -26,6 +26,7 @@ export const CardListEntity: FC<CardListEntityProps> = ({ cards, name }) => {
             price={card.price}
             link={card.link}
             image={card.image}
+            key={card.link}
           />
         ))}
       </Carousel>

@@ -17,7 +17,5 @@ export class Api<T> {
   path: string
 
   // ALL API ACTIONS
-  get = async (params: string) => {
-    return (await axios.get<T>(`${this.path}${params}`)).data
-  }
+  get = async (params: string) => (await axios.get<T>(this.path + params)).data
 }

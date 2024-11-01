@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, reaction } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import { fromPromise, IPromiseBasedObservable } from 'mobx-utils'
 import { Api } from './common/api'
 //DATA
@@ -15,10 +15,6 @@ class CardsApi extends Api<IMainData> {
   constructor() {
     super(`${API_URL}q=`)
     makeObservable(this, cardsApiProps)
-    reaction(
-      () => this.cards?.state,
-      () => console.log(this.cards)
-    )
   }
 
   // ==================== CARDS API ====================
@@ -27,7 +23,8 @@ class CardsApi extends Api<IMainData> {
   cards: IPromiseBasedObservable<IMainData> | null = null
 
   // ALL CARDS API ACTIONS
-  fetchMarkets = async (params: string) => (this.cards = fromPromise(this.get(params)))
+  fetchMarkets = async (params: string) =>
+    (this.cards = fromPromise(this.get(params)))
 }
 
 export const cardsApi = new CardsApi()
