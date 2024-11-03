@@ -7,11 +7,15 @@ from backend.utils.get_config.get_pars_config import GetParsConfig
 from .product_models import ProductData, ProductList
 
 
-async def get_kufar_data(query: str) -> ProductList:
-    kufar_pars_config: Dict[str] = GetParsConfig.get_kufar_pars_config()
+async def get_kufar_data(query: str,
+                         only_new: bool) -> ProductList:
+    kufar_pars_config: Dict = GetParsConfig.get_kufar_pars_config()
 
     query: str = query.strip()
-    url: str = kufar_pars_config["main_pars_url"].format(query=query)
+    if only_new:
+        url: str = kufar_pars_config["pars_url_only_new"].format(query=query)
+    else:
+        url: str = kufar_pars_config["pars_url_any"].format(query=query)
     first_part_image_url: str = kufar_pars_config["first_part_image_url"]
 
     async with httpx.AsyncClient(timeout=10.0) as client:

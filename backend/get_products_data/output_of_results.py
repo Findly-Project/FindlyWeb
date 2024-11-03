@@ -18,8 +18,16 @@ from httpx import RemoteProtocolError, TimeoutException
 
 
 @cached(ttl=5 * 60, serializer=PickleSerializer())
-async def output_of_results(query: str) -> MarketPlaceList:
-    get_data_functions: Dict[str] = {
+async def output_of_results(query: str,
+                            max_size: int | None,
+                            only_new: int | None) -> MarketPlaceList:
+    only_new = bool(only_new)
+    if max_size is None:
+        max_size = 6
+    elif max_size == 0:
+        max_size = 21
+
+    get_data_functions: Dict[str, query] = {
         "Kufar": get_kufar_data,
         "MMG": get_mmg_data,
         "21vek": get_21vek_data,
@@ -29,9 +37,19 @@ async def output_of_results(query: str) -> MarketPlaceList:
 
     for func_name, func in get_data_functions.items():
         try:
-            pars_data: ProductList = await func(query)
+            match func_name:
+                case "Kufar":
+                    pars_data: ProductList = await func(query=query,
+                                                        only_new=only_new)
+                case _:
+                    pars_data: ProductList = await func(query=query)
         except (RemoteProtocolError, TimeoutException):
-            pars_data: ProductList = await func(query)
+            match func_name:
+                case "Kufar":
+                    pars_data: ProductList = await func(query=query,
+                                                        only_new=only_new)
+                case _:
+                    pars_data: ProductList = await func(query=query)
 
         product_names: List[str] = [j.name for j in pars_data]
 
@@ -48,6 +66,9 @@ async def output_of_results(query: str) -> MarketPlaceList:
         result_items: ProductList = filter_for_category_based_on_price.filter_by_price(
             items_sorted_by_price
         )
+
+        if len(result_items) > max_size:
+            result_items: ProductList = ProductList(result_items[:max_size+1])
 
         if result_items:
             output_result_items.add_list_of_products(func_name, result_items)

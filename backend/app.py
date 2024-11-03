@@ -1,6 +1,7 @@
+from types import NoneType
 from typing import Dict
 from httpx import ReadTimeout, ConnectTimeout
-from quart import Quart, jsonify, render_template, request, abort
+from quart import Quart, render_template, request, abort
 from quart.helpers import make_response
 from quart.wrappers import Response
 from .get_products_data.collecting_primary_data.product_models import MarketPlaceList
@@ -32,6 +33,13 @@ async def unauthorized_view(error) -> Response:
     return res
 
 
+@app.errorhandler(422)
+async def unprocessable_content_view(error) -> Response:
+    content = await render_template("unprocessable_content_page.html")
+    res = await make_response(content, 422)
+    return res
+
+
 @app.route("/api/search", methods=["GET"])
 async def main_view() -> Response | str:
 
@@ -44,18 +52,35 @@ async def main_view() -> Response | str:
         q = request.args.get('q')
         if not q:
             abort(422)
-        max_size = request.args.get('max_size', type=int)
-        only_new = request.args.get('only_new', type=int)
+        max_size = request.args.get('max_size')
+        only_new = request.args.get('only_new')
+        if not isinstance(max_size, NoneType):
+            try:
+                map(int, max_size)
+                if not (0 <= int(max_size) <= 21): raise ValueError
+            except ValueError as e:
+                abort(422)
+        if only_new not in [None, NoneType, '0', '1']: abort(422)
 
         all_args = set(request.args.keys())
+        if len(all_args - allowed_args) > 0:
+            abort(422)
         query: str = request.args.get('q').replace("+", " ")
+
         try:
-            data: MarketPlaceList = await output_of_results(query)
+            data: MarketPlaceList = await output_of_results(query=query,
+                                                            max_size=max_size,
+                                                            only_new=only_new)
         except (ConnectTimeout, ReadTimeout):
-            data: MarketPlaceList = await output_of_results(query)
+            data: MarketPlaceList = await output_of_results(query=query,
+                                                            max_size=max_size,
+                                                            only_new=only_new)
+
         json_data: Dict = data.get_json()
         content = {"data": json_data}
+
         res = await make_response(content)
+
         if request.url.startswith('http://127.0.0.1:5000/api/search'):
             res.headers['Access-Control-Allow-Origin'] = '*'
         res.headers['Content-Type'] = 'application/json'
