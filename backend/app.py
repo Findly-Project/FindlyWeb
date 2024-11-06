@@ -58,7 +58,7 @@ async def main_view() -> Response | str:
             try:
                 map(int, max_size)
                 if not (0 <= int(max_size) <= 21): raise ValueError
-            except ValueError as e:
+            except ValueError:
                 abort(422)
         if only_new not in [None, NoneType, '0', '1']: abort(422)
 

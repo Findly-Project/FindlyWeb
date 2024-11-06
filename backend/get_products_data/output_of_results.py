@@ -1,3 +1,4 @@
+from types import NoneType
 from .collecting_primary_data.get_kufar_data import get_kufar_data
 from .collecting_primary_data.get_mmg_data import get_mmg_data
 from .collecting_primary_data.get_onliner_data import get_onliner_data
@@ -22,10 +23,12 @@ async def output_of_results(query: str,
                             max_size: int | None,
                             only_new: int | None) -> MarketPlaceList:
     only_new = bool(only_new)
-    if max_size is None:
+    if max_size in [None, NoneType]:
         max_size = 6
     elif max_size == 0:
         max_size = 21
+    else:
+        max_size = int(max_size)
 
     get_data_functions: Dict[str, query] = {
         "Kufar": get_kufar_data,
