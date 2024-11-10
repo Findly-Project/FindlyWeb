@@ -1,4 +1,3 @@
-import { FC } from 'react'
 import s from './index.module.scss'
 //MOBX
 import { ICard } from '@/shared/interfaces/ICard'
@@ -11,7 +10,7 @@ interface CardListEntityProps {
   name: string
 }
 
-export const CardListEntity: FC<CardListEntityProps> = ({ cards, name }) => {
+export const CardListEntity = ({ cards, name }: CardListEntityProps) => {
   return (
     <div className={`${s.cards}`}>
       <h2>{name}</h2>
