@@ -9,8 +9,7 @@
         '192.168.172.146',
         '192.168.172.105',
         '192.168.20.105',
-        '127.0.0.1',
-        'http://localhost:5173'
+        '127.0.0.1'
     ]
 
 
@@ -22,7 +21,8 @@
     main_api_url="https://www.onliner.by/sdapi/catalog.api/search/products?query={query}&page={page}"
 
     [Pars.Kufar]
-    main_pars_url="https://api.kufar.by/search-api/v2/search/rendered-paginated?cnd=2&lang=ru&ot=1&query={query}&search_variant=constant_score&size=43&sort=scr.d"
+    pars_url_only_new="https://api.kufar.by/search-api/v2/search/rendered-paginated?cnd=2&lang=ru&ot=1&query={query}&search_variant=constant_score&size=41&sort=scr.d"
+    pars_url_any="https://api.kufar.by/search-api/v2/search/rendered-paginated?lang=ru&ot=1&query={query}&search_variant=constant_score&size=41&sort=scr.d"
     first_part_image_url="https://rms.kufar.by/v1/list_thumbs_2x/"
 
     [Pars.MMG]
