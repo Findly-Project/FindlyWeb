@@ -1,8 +1,7 @@
-import { ICard } from '@/shared/interfaces/ICard'
-import { FC } from 'react'
 import s from './index.module.scss'
+import { ICard } from '@/shared/interfaces/ICard'
 
-export const CardEntity: FC<ICard> = ({ name, price, link, image }) => {
+export const CardEntity = ({ name, price, link, image }: ICard) => {
   return (
     <a href={link} target="_blank" className={`${s.card_item} df`}>
       <img src={image} alt={image} className={s.card_item__image} />

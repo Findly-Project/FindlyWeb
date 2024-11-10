@@ -28,7 +28,7 @@ export const SearchInputUI = observer(() => {
         placeholder="Введите название продукта"
         className={s.input}
       />
-      <button className={s.input_search} onClick={handleSubmit}>
+      <button className={`${s.input_search} df jcc aic`} onClick={handleSubmit}>
         <SearchOutlinedIcon />
       </button>
     </form>
