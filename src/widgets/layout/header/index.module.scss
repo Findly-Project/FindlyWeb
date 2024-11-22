@@ -1,0 +1,36 @@
+@import '@/app/assets/styles/variables.scss';
+
+.header {
+  position: relative;
+  width: 100vw;
+  height: max-content;
+  font-size: 17px;
+  font-weight: 600;
+  justify-content: space-between;
+  .headerMain {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    button {
+      margin: 0;
+    }
+  }
+  a {
+    position: absolute;
+    height: max-content;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: 5px;
+    padding: 5px 10px;
+    color: #fff;
+    background-color: $red-color;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    justify-content: center;
+    align-items: normal;
+  }
+}
