@@ -1,23 +1,5 @@
-# backend
-backend/secret_data/logs.log
-backend/get_products_data/__pycache__
-backend/utils/get_config/__pycache__
-backend/utils/__pycache__
-backend/get_products_data/collecting_primary_data/__pycache__/
-backend/get_products_data/filtering_algorithms/__pycache__/
-backend/__pycache__
-backend/middleware/__pycache__/
-test.py
-
-#PyCharn
-.idea
-venv
-.venv
-
-# frontend
-
 # Logs
-frontend/logs
+logs
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -25,10 +7,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-frontend/node_modules
-frontend/dist
-frontend/dist-ssr
+node_modules
+dist
+dist-ssr
 *.local
+.idea
 
 # Editor directories and files
 .vscode/*
