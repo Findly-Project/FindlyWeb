@@ -13,7 +13,7 @@ export const HeaderLayoutWidget = memo(() => {
   const navigate = useNav()
   const isMobile = useMobile()
 
-  const cards = null
+  const cards = false
 
   return (
     <motion.header
@@ -22,7 +22,7 @@ export const HeaderLayoutWidget = memo(() => {
       animate={{ y: 0 }}
       transition={{ ease: 'easeOut', duration: 0.5 }}
     >
-      <div className={`${s.headerMain} ${cards || isMobile ? 'dg' : 'df'} jcc`}>
+      <div className={`${s.headerMain} ${cards || isMobile ? 'df fdc' : 'df'} jcc`}>
         <button onClick={() => navigate('/')}>
           <motion.img
             src={findlyLogo}

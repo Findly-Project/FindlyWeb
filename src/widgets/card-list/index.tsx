@@ -7,13 +7,30 @@ import { CircularProgress } from '@mui/material'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
 import { observer } from 'mobx-react-lite'
+//ICONS
+import SearchIcon from '@mui/icons-material/Search'
+import CloseIcon from '@mui/icons-material/Close'
 
 export const CardsWidget = observer(() => {
   const { cards } = cardsApi as IMainDataCards
 
-  if (!cards) return 'Please type product name'
-  if (cards?.state == 'pending') return <CircularProgress color="inherit" />
-  if (cards?.state == 'rejected') return 'Error, please try again!'
+  if (!cards)
+    return (
+      <div className="df fdc jcc aic m10 fz14">
+        <SearchIcon style={{ fontSize: '65px' }} />
+        Please type product name
+      </div>
+    )
+
+  if (cards?.state == 'pending') return <CircularProgress color="inherit" className="m10" />
+
+  if (cards?.state == 'rejected')
+    return (
+      <div className="df fdc jcc aic m10 fz14">
+        <CloseIcon style={{ fontSize: '65px' }} />
+        Error, please try again!
+      </div>
+    )
 
   return (
     <>

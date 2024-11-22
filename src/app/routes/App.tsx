@@ -1,7 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 //COMPONENTS
+import { HeaderLayoutWidget } from '@/widgets/layout/header'
 import { HomePage } from '@/pages/home'
-import { HeaderLayoutWidget } from '../../widgets/layout/header'
+import { DocumentationPage } from '@/pages/doc'
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
       <HeaderLayoutWidget />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/documentation" element={<DocumentationPage />} />
       </Routes>
     </div>
   )

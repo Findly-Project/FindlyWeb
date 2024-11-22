@@ -4,18 +4,23 @@
   position: relative;
   width: 100vw;
   height: max-content;
-  margin-bottom: 15px;
   font-size: 17px;
   font-weight: 600;
   justify-content: space-between;
   .headerMain {
     width: 100%;
     max-width: 600px;
+    margin: 0 auto;
     button {
       margin: 0;
     }
   }
   a {
+    position: absolute;
+    height: max-content;
+    top: 0;
+    bottom: 0;
+    right: 0;
     margin: 5px;
     padding: 5px 10px;
     color: #fff;
@@ -27,10 +32,5 @@
   .header {
     justify-content: center;
     align-items: normal;
-    a {
-      position: absolute;
-      top: 0;
-      right: 0;
-    }
   }
 }
