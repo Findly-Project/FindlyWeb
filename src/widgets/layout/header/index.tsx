@@ -7,7 +7,7 @@ import { useNav } from '@/shared/hooks/useNav'
 import { useMobile } from '@/shared/hooks/useMobile'
 //COMPONENTS
 import { Link } from 'react-router-dom'
-import { SearchInputUI } from '@/shared/ui/input'
+import { SearchInputUI } from './ui/input'
 
 export const HeaderLayoutWidget = memo(() => {
   const navigate = useNav()
@@ -36,9 +36,7 @@ export const HeaderLayoutWidget = memo(() => {
         </button>
         <SearchInputUI />
       </div>
-      <div>
-        <Link to="/documentation">Docs</Link>
-      </div>
+      <Link to="/documentation">Docs</Link>
     </motion.header>
   )
 })

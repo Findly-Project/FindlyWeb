@@ -7,8 +7,11 @@ import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import { useFormatInput } from '@/shared/hooks/useFormatInput'
+import { useTranslation } from 'react-i18next'
 
 export const SearchInputUI = observer(() => {
+  const { t } = useTranslation()
+
   const { fetchMarkets } = cardsApi
 
   const [inputVal, setInputVal] = useState('')
@@ -25,7 +28,7 @@ export const SearchInputUI = observer(() => {
         type="text"
         value={inputVal}
         onChange={e => setInputVal(e.target.value)}
-        placeholder="Введите название продукта"
+        placeholder={t('header.input.placeholder')}
         className={s.input}
       />
       <button className={`${s.input_search} df jcc aic`} onClick={handleSubmit}>

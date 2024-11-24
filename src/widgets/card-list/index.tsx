@@ -10,15 +10,17 @@ import { observer } from 'mobx-react-lite'
 //ICONS
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
+import { useTranslation } from 'react-i18next'
 
 export const CardsWidget = observer(() => {
+  const { t } = useTranslation()
   const { cards } = cardsApi as IMainDataCards
 
   if (!cards)
     return (
       <div className="df fdc jcc aic m10 fz14">
         <SearchIcon style={{ fontSize: '65px' }} />
-        Please type product name
+        {t('main.preview')}
       </div>
     )
 
@@ -28,7 +30,7 @@ export const CardsWidget = observer(() => {
     return (
       <div className="df fdc jcc aic m10 fz14">
         <CloseIcon style={{ fontSize: '65px' }} />
-        Error, please try again!
+        {t('main.error')}
       </div>
     )
 
