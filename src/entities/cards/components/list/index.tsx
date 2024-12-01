@@ -3,7 +3,7 @@ import s from './index.module.scss'
 import { ICard } from '@/shared/interfaces/ICard'
 //COMPONENTS
 import Carousel from 'react-material-ui-carousel'
-import { CardEntity } from '../card'
+import { CardEntity } from './components/card'
 
 interface CardListEntityProps {
   cards: ICard[]
@@ -20,13 +20,7 @@ export const CardListEntity = ({ cards, name }: CardListEntityProps) => {
         className={`${s.cards_carousel} df jcc aic`}
       >
         {cards?.map(card => (
-          <CardEntity
-            name={card.name}
-            price={card.price}
-            link={card.link}
-            image={card.image}
-            key={card.link}
-          />
+          <CardEntity card={card} key={card.link} />
         ))}
       </Carousel>
     </div>

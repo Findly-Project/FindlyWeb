@@ -13,7 +13,7 @@ export const HeaderLayoutWidget = memo(() => {
   const navigate = useNav()
   const isMobile = useMobile()
 
-  const cards = false
+  const cards = true
 
   return (
     <motion.header

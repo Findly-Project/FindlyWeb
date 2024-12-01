@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite'
 import s from './index.module.scss'
 //COMPONENTS
-import { CardsWidget } from '@/widgets/card-list'
+import { CardsWidget } from '@/widgets/cards'
 import { Switch } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 

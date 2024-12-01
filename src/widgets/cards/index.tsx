@@ -1,16 +1,16 @@
 import s from './index.module.scss'
+import { observer } from 'mobx-react-lite'
+import { useTranslation } from 'react-i18next'
 //INTERFACES
 import { IMainDataCards } from '@/shared/interfaces/IMainData'
 //COMPONENTS
-import { CardListEntity } from '@/entities/card-list'
+import { CardListEntity } from '@/entities/cards'
 import { CircularProgress } from '@mui/material'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
-import { observer } from 'mobx-react-lite'
 //ICONS
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-import { useTranslation } from 'react-i18next'
 
 export const CardsWidget = observer(() => {
   const { t } = useTranslation()

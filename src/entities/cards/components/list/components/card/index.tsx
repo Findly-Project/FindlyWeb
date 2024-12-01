@@ -1,7 +1,13 @@
 import s from './index.module.scss'
 import { ICard } from '@/shared/interfaces/ICard'
 
-export const CardEntity = ({ name, price, link, image }: ICard) => {
+interface CardEntityProps {
+  card: ICard
+}
+
+export const CardEntity = ({ card }: CardEntityProps) => {
+  const { image, link, name, price } = card
+
   return (
     <a href={link} target="_blank" className={`${s.card_item} df`}>
       <img src={image} alt={image} className={s.card_item__image} />
