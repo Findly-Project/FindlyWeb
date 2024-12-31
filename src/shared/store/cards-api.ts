@@ -19,12 +19,14 @@ class CardsApi extends Api<IMainData> {
 
   // ==================== CARDS API ====================
 
-  // ALL CARDS API STATES
+  // CARDS API STATES
   cards: IPromiseBasedObservable<IMainData> | null = null
 
-  // ALL CARDS API ACTIONS
-  fetchMarkets = async (params: string) =>
-    (this.cards = fromPromise(this.get(params)))
+  // CARDS API ACTIONS
+  fetchMarkets = async (params: string) => this.setCards(fromPromise(this.get(params)))
+
+  // CARDS API STATE MOVES
+  setCards = (cards: IPromiseBasedObservable<IMainData> | null) => (this.cards = cards)
 }
 
 export const cardsApi = new CardsApi()

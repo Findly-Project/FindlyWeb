@@ -9,7 +9,7 @@ export const CardEntity = ({ card }: CardEntityProps) => {
   const { image, link, name, price } = card
 
   return (
-    <a href={link} target="_blank" className={`${s.card_item} df`}>
+    <a href={link} target="_blank" className={`${s.card_item} df`} draggable={false}>
       <img src={image} alt={image} className={s.card_item__image} />
       <div className={s.card_item__info}>
         <p className={`${s.card_item__name} cw`}>{name}</p>

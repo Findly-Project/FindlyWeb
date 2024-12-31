@@ -1,13 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import s from './index.module.scss'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
 import { useFormatInput } from '@/shared/hooks/useFormatInput'
-import { useTranslation } from 'react-i18next'
 
 export const SearchInputUI = observer(() => {
   const { t } = useTranslation()

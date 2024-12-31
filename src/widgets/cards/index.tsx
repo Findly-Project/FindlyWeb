@@ -37,11 +37,11 @@ export const CardsWidget = observer(() => {
   return (
     <>
       <div className={`${s.markets_grid} dg jcc aic`}>
-        {Object.entries(cards?.value?.data).map(([key, cardList]) => (
+        {Object.entries(cards?.value?.products_data)?.map(([key, cardList]) => (
           <CardListEntity cards={cardList} name={key} key={key} />
         ))}
       </div>
-      {Object.entries(cards?.value?.data).length == 0 && <h3>Not found :(</h3>}
+      {Object.entries(cards?.value?.products_data).length == 0 && <h3>Not found :(</h3>}
     </>
   )
 })
