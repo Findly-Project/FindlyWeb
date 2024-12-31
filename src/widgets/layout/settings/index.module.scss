@@ -1,0 +1,13 @@
+@import '@/app/assets/styles/variables.scss';
+.settings {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 5px;
+  z-index: 100;
+  button {
+    padding: 7px;
+    border-radius: 50%;
+    background-color: $red-color;
+  }
+}

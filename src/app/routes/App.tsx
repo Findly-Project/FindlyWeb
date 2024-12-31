@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import { HeaderLayoutWidget } from '@/widgets/layout/header'
 import { HomePage } from '@/pages/home'
 import { DocumentationPage } from '@/pages/doc'
+import { SettingsLayoutWidget } from '@/widgets/layout/settings'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/documentation" element={<DocumentationPage />} />
       </Routes>
+      <SettingsLayoutWidget />
     </div>
   )
 }
