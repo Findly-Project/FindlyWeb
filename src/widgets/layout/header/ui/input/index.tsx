@@ -7,6 +7,7 @@ import s from './index.module.scss'
 import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined'
+//HOOKS
 import { useFormatInput } from '@/shared/hooks/useFormatInput'
 
 export const SearchInputUI = observer(() => {

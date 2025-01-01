@@ -5,11 +5,20 @@ import { Api } from './common/api'
 import { API_URL } from '../data/API_URL'
 // INTERFACES
 import { IMainData } from '../interfaces/IMainData'
+import { params } from './details/parameters'
 
 const cardsApiProps = {
   cards: observable,
   fetchMarkets: action,
 }
+
+const {
+  $ms: { ms },
+  $on: { on },
+  $pf: { pf },
+  $nf: { nf },
+  $ew: { ew },
+} = params
 
 class CardsApi extends Api<IMainData> {
   constructor() {
@@ -22,28 +31,23 @@ class CardsApi extends Api<IMainData> {
   // CARDS API STATES
   cards: IPromiseBasedObservable<IMainData> | null = null
 
-  // API PARAMS
-  $on = true
-  $ms = 12
-  $pf = true
-  $nf = true
-  $ew: string[] | null = null
-
   // CARDS API ACTIONS
   fetchMarkets = async (params: string) => {
     const queryParams: Record<string, string | number | undefined> = {
       q: params,
-      ...(this.$ms != 12 && { ms: `${this.$ms}` }),
-      ...(this.$on == false && { on: 'off' }),
-      ...(this.$pf == false && { pf: 'off' }),
-      ...(this.$nf == false && { nf: 'off' }),
-      ...(this.$ew?.length && { ew: this.$ew.join('|') }),
+      ...(ms != 12 && { ms: `${ms}` }),
+      ...(on == false && { on: 'off' }),
+      ...(pf == false && { pf: 'off' }),
+      ...(nf == false && { nf: 'off' }),
+      ...(ew?.length && { ew: ew.join('|') }),
     }
 
     const queryString = Object.entries(queryParams)
       .filter(([_, value]) => value != null)
       .map(([key, value]) => `${key}=${encodeURIComponent(value!)}`)
       .join('&')
+
+    console.log(queryParams, queryString)
 
     this.setCards(fromPromise(this.get(`?${queryString}`)))
   }
