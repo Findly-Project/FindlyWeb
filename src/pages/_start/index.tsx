@@ -4,21 +4,25 @@ import s from './index.module.scss'
 
 export const StartWelcome = () => {
   return (
-    <div className={`${s.welcome} df jcc aic`}>
-      <div className="df aic jcc">
-        <motion.img
-          src={findlyLogo}
-          alt="Findly Logo"
-          height={100}
-          draggable={false}
-          animate={{ rotate: 17, scale: 1 }}
-          transition={{ ease: 'easeOut', duration: 3.5 }}
-          initial={{ scale: 0 }}
-        />
-        <h1>
-          <b>Findly</b>
-        </h1>
+    <>
+      <link rel="preload" as="image" href={findlyLogo} />
+      <div className={`${s.welcome} df jcc aic`}>
+        <div className="df aic jcc">
+          <motion.img
+            src={findlyLogo}
+            alt="Findly Logo"
+            height={100}
+            draggable={false}
+            animate={{ rotate: 17, scale: 1 }}
+            transition={{ ease: 'easeOut', duration: 3.5 }}
+            initial={{ scale: 0 }}
+            loading="eager"
+          />
+          <h1>
+            <b>Findly</b>
+          </h1>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
