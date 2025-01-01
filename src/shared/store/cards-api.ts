@@ -12,13 +12,7 @@ const cardsApiProps = {
   fetchMarkets: action,
 }
 
-const {
-  $ms: { ms },
-  $on: { on },
-  $pf: { pf },
-  $nf: { nf },
-  $ew: { ew },
-} = params
+const { $ms, $on, $pf, $nf, $ew } = params
 
 class CardsApi extends Api<IMainData> {
   constructor() {
@@ -35,11 +29,11 @@ class CardsApi extends Api<IMainData> {
   fetchMarkets = async (params: string) => {
     const queryParams: Record<string, string | number | undefined> = {
       q: params,
-      ...(ms != 12 && { ms: `${ms}` }),
-      ...(on == false && { on: 'off' }),
-      ...(pf == false && { pf: 'off' }),
-      ...(nf == false && { nf: 'off' }),
-      ...(ew?.length && { ew: ew.join('|') }),
+      ...{ ms: `${$ms.ms}` },
+      ...($on.on == false && { on: 'off' }),
+      ...($pf.pf == false && { pf: 'off' }),
+      ...($nf.nf == false && { nf: 'off' }),
+      ...($ew.ew?.length && { ew: $ew.ew.join('|') }),
     }
 
     const queryString = Object.entries(queryParams)
