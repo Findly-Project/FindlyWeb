@@ -8,5 +8,24 @@
   height: 100vh;
   div {
     vertical-align: middle;
+    img {
+      height: 150px;
+    }
+    h1 {
+      font-size: 30px;
+    }
+  }
+}
+
+@media (max-width: 1500px) {
+  .welcome {
+    div {
+      img {
+        height: 100px;
+      }
+      h1 {
+        font-size: 21px;
+      }
+    }
   }
 }

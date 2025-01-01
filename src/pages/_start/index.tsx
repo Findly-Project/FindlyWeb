@@ -11,10 +11,9 @@ export const StartWelcome = () => {
           <motion.img
             src={findlyLogo}
             alt="Findly Logo"
-            height={100}
             draggable={false}
             animate={{ rotate: 17, scale: 1 }}
-            transition={{ ease: 'easeOut', duration: 3.5 }}
+            transition={{ ease: 'easeOut', duration: 3 }}
             initial={{ scale: 0 }}
             loading="eager"
           />
