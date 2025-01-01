@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import s from './index.module.scss'
 
 interface ModalUiProps {
@@ -8,9 +9,16 @@ interface ModalUiProps {
 export const ModalUi = ({ off, children }: ModalUiProps) => {
   return (
     <div className={`${s.modalBack} df jcc aic`} onClick={() => off(false)}>
-      <div className={`${s.modalContent}`} onClick={e => e.stopPropagation()}>
+      <motion.div
+        className={`${s.modalContent}`}
+        onClick={e => e.stopPropagation()}
+        initial={{ scale: 0.8 }}
+        animate={{ scale: 1 }}
+        exit={{ scale: 0.9 }}
+        transition={{ ease: 'easeOut', duration: 0.3 }}
+      >
         {children}
-      </div>
+      </motion.div>
     </div>
   )
 }

@@ -11,6 +11,7 @@ import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
+import { motion } from 'framer-motion'
 
 export const CardsWidget = observer(() => {
   const { t } = useTranslation()
@@ -18,10 +19,15 @@ export const CardsWidget = observer(() => {
 
   if (!cards)
     return (
-      <div className="df fdc jcc aic m10 fz14">
+      <motion.div
+        className="df fdc jcc aic m10 fz14"
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ ease: 'easeOut', duration: 1 }}
+      >
         <SearchIcon style={{ fontSize: '65px' }} />
-        {t('main.preview')}
-      </div>
+        <b>{t('main.preview')}</b>
+      </motion.div>
     )
 
   if (cards?.state == 'pending') return <CircularProgress color="inherit" className="m10" />
@@ -30,7 +36,7 @@ export const CardsWidget = observer(() => {
     return (
       <div className="df fdc jcc aic m10 fz14">
         <CloseIcon style={{ fontSize: '65px' }} />
-        {t('main.error')}
+        <b>{t('main.error')}</b>
       </div>
     )
 

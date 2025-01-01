@@ -2,6 +2,7 @@
 import { observer } from 'mobx-react-lite'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 import s from './index.module.scss'
 //MOBX
 import { cardsApi } from '@/shared/store/cards-api'
@@ -26,16 +27,25 @@ export const SearchInputUI = observer(() => {
 
   return (
     <form onSubmit={handleSubmit} className={`${s.formInput} df aic`}>
-      <input
+      <motion.input
         type="text"
         value={inputVal}
         onChange={e => setInputVal(e.target.value)}
         placeholder={t('header.input.placeholder')}
         className={s.input}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ ease: 'easeOut', duration: 1 }}
       />
-      <button className={`${s.input_search} df jcc aic`} onClick={handleSubmit}>
+      <motion.button
+        className={`${s.input_search} df jcc aic`}
+        onClick={handleSubmit}
+        initial={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ ease: 'easeOut', duration: 1 }}
+      >
         <SearchOutlinedIcon />
-      </button>
+      </motion.button>
     </form>
   )
 })

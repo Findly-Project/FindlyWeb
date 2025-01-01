@@ -15,7 +15,7 @@
       margin: 0;
     }
   }
-  a {
+  .docs {
     position: absolute;
     height: max-content;
     top: 0;
@@ -23,8 +23,11 @@
     right: 0;
     margin: 5px 10px;
     padding: 5px 10px;
-    color: #fff;
     background-color: $red-color;
+    * {
+      color: #fff;
+      text-decoration: none;
+    }
   }
 }
 
