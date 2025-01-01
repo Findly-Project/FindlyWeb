@@ -20,6 +20,7 @@ export const SearchInputUI = observer(() => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement | HTMLButtonElement>) => {
     e.preventDefault()
     const query = useFormatInput(inputVal)
+    if (query.length < 1) return alert('Введите запрос')
     fetchMarkets(query)
   }
 

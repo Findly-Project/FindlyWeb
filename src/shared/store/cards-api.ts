@@ -27,18 +27,18 @@ class CardsApi extends Api<IMainData> {
 
   // CARDS API ACTIONS
   fetchMarkets = async (params: string) => {
-    const queryParams: Record<string, string | number | undefined> = {
+    const queryParams: Record<string, string | number | null> = {
       q: params,
-      ...{ ms: `${$ms.ms}` },
-      ...($on.on == false && { on: 'off' }),
-      ...($pf.pf == false && { pf: 'off' }),
-      ...($nf.nf == false && { nf: 'off' }),
-      ...($ew.ew?.length && { ew: $ew.ew.join('|') }),
+      ms: $ms.ms,
+      on: $on.on === false ? 'off' : null,
+      pf: $pf.pf === false ? 'off' : null,
+      nf: $nf.nf === false ? 'off' : null,
+      ew: Array.isArray($ew.ew) && $ew.ew.length > 0 ? $ew.ew.join('|') : null,
     }
 
     const queryString = Object.entries(queryParams)
       .filter(([_, value]) => value != null)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value!)}`)
+      .map(([key, value]) => `${key}=${encodeURIComponent(`${value}`)}`)
       .join('&')
 
     console.log(queryParams, queryString)
