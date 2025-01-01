@@ -9,6 +9,7 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import { ModalUi } from '@/shared/ui/modal'
 import { RangeInputUi } from '@/shared/ui/input/range'
 import { Switch } from '@mui/material'
+import { TextAreaUi } from '@/shared/ui/input/textarea'
 //MOBX
 import { params } from '@/shared/store/details/parameters'
 
@@ -20,7 +21,9 @@ export const SettingsLayoutWidget = observer(() => {
     $pf: { pf, setPf },
     $nf: { nf, setNf },
     $on: { on, setOn },
+    $ew: { ew, setEw },
   } = params
+  const [input, setInput] = useState('')
   return (
     <>
       <motion.div
@@ -68,6 +71,9 @@ export const SettingsLayoutWidget = observer(() => {
               onChange={() => setOn(!on)}
             />
             <span>{t('main.filter.new')}</span>
+          </div>
+          <div>
+            <TextAreaUi selected={ew} setSelected={setEw} val={input} onChange={setInput} />
           </div>
         </ModalUi>
       )}

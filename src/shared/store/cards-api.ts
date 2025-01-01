@@ -27,13 +27,14 @@ class CardsApi extends Api<IMainData> {
 
   // CARDS API ACTIONS
   fetchMarkets = async (params: string) => {
+    const ex_words = $ew.ew.join('|')
     const queryParams: Record<string, string | number | null> = {
       q: params,
       ms: $ms.ms,
       on: $on.on === false ? 'off' : null,
       pf: $pf.pf === false ? 'off' : null,
       nf: $nf.nf === false ? 'off' : null,
-      ew: Array.isArray($ew.ew) && $ew.ew.length > 0 ? $ew.ew.join('|') : null,
+      ew: $ew.ew.length > 0 ? ex_words : null,
     }
 
     const queryString = Object.entries(queryParams)
