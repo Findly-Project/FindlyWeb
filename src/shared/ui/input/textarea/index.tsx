@@ -1,4 +1,6 @@
 import { useFormatInput } from '@/shared/hooks/useFormatInput'
+import s from './index.module.scss'
+import { useSliceStr } from '@/shared/hooks/useSliceStr'
 
 interface TextAreaUiProps {
   val: string
@@ -8,7 +10,7 @@ interface TextAreaUiProps {
 }
 
 export const TextAreaUi = ({ val, onChange, selected, setSelected }: TextAreaUiProps) => {
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const value = useFormatInput(val)
     if (e.key == 'Enter' && value.length > 0) {
       setSelected([...selected, value])
@@ -17,18 +19,14 @@ export const TextAreaUi = ({ val, onChange, selected, setSelected }: TextAreaUiP
     }
   }
   return (
-    <div>
+    <div className={`${s.e_words} df fdc`}>
       {selected?.map((w, _) => (
-        <div>
-          <span key={w}>{w}</span>
-          <button onClick={() => setSelected(selected.filter(word => word != w))}>x</button>
+        <div className="df aic">
+          <span key={w}>{useSliceStr(w.replaceAll('+', ' '), 6)}</span>
+          <button onClick={() => setSelected(selected.filter((_w, $) => $ != _))}>x</button>
         </div>
       ))}
-      <textarea
-        value={val}
-        onChange={e => onChange(e.target.value)}
-        onKeyDown={handleKeyDown}
-      />
+      <input value={val} onChange={e => onChange(e.target.value)} onKeyDown={handleKeyDown} />
     </div>
   )
 }

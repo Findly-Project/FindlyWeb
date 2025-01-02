@@ -1,0 +1,22 @@
+@import '@/app/assets/styles/variables.scss';
+.e_words {
+  div {
+    width: 100px;
+    padding: 5px 10px;
+    margin: 1px;
+    background-color: $body-color;
+    border-radius: 10px;
+    justify-content: space-between;
+    span {
+      overflow: hidden;
+      margin-right: 2px;
+    }
+  }
+  input {
+    margin: 3px;
+    padding: 7px 12px;
+    background-color: $body-color;
+    color: #fff;
+    border-radius: 14px;
+  }
+}
