@@ -1,4 +1,4 @@
-import findlyLogo from '@/shared/logo/findly-logo.png'
+import findlyLogo from '@/app/assets/logo/findly-logo.png'
 import s from './index.module.scss'
 import { motion } from 'framer-motion'
 //HOOKS
