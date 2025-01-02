@@ -1,5 +1,6 @@
-import { useFormatInput } from '@/shared/hooks/useFormatInput'
 import s from './index.module.scss'
+//HOOKS
+import { useFormatInput } from '@/shared/hooks/useFormatInput'
 import { useSliceStr } from '@/shared/hooks/useSliceStr'
 
 interface TextAreaUiProps {
@@ -18,6 +19,7 @@ export const TextAreaUi = ({ val, onChange, selected, setSelected }: TextAreaUiP
       e.preventDefault()
     }
   }
+
   return (
     <div className={`${s.e_words} df fdc`}>
       {selected?.map((w, _) => (
