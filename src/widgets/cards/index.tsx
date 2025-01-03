@@ -1,8 +1,9 @@
 import s from './index.module.scss'
 import { observer } from 'mobx-react-lite'
 import { useTranslation } from 'react-i18next'
+import { motion } from 'framer-motion'
 //INTERFACES
-import { IMainDataCards } from '@/shared/interfaces/IMainData'
+import { ICard } from '@/shared/interfaces/ICard'
 //COMPONENTS
 import { CardListEntity } from '@/entities/cards'
 import { CircularProgress } from '@mui/material'
@@ -11,11 +12,12 @@ import { cardsApi } from '@/shared/store/cards-api'
 //ICONS
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
-import { motion } from 'framer-motion'
 
 export const CardsWidget = observer(() => {
   const { t } = useTranslation()
-  const { cards } = cardsApi as IMainDataCards
+  const {
+    cards: { cards },
+  } = cardsApi
 
   if (!cards)
     return (
@@ -43,11 +45,11 @@ export const CardsWidget = observer(() => {
   return (
     <>
       <div className={`${s.markets_grid} dg jcc aic`}>
-        {Object.entries(cards?.value?.products_data)?.map(([key, cardList]) => (
-          <CardListEntity cards={cardList} name={key} key={key} />
+        {Object.entries(cards.value?.products_data)?.map(([key, cardList]) => (
+          <CardListEntity cards={cardList as ICard[]} name={key} key={key} />
         ))}
       </div>
-      {Object.entries(cards?.value?.products_data).length == 0 && <h3>Not found :(</h3>}
+      {Object.entries(cards.value?.products_data).length == 0 && <h3>Not found :(</h3>}
     </>
   )
 })
