@@ -1,4 +1,14 @@
-export const docData = [
+interface Item {
+  title: string
+  value: string
+}
+
+interface DocBlock {
+  block: string
+  items: Item[]
+}
+
+export const docData: DocBlock[] = [
   {
     block: 'Дока',
     items: [

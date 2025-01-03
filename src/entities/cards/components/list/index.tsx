@@ -3,7 +3,7 @@ import s from './index.module.scss'
 import { ICard } from '@/shared/interfaces/ICard'
 //COMPONENTS
 import Carousel from 'react-material-ui-carousel'
-import { CardEntity } from './components/card'
+import { CardEntity } from './components/card/index'
 
 interface CardListEntityProps {
   cards: ICard[]
