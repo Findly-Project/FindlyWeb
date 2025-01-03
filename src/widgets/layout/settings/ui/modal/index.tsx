@@ -9,6 +9,8 @@ import { TextAreaUi } from '../textarea'
 import { useTranslation } from 'react-i18next'
 //MOBX
 import { params } from '@/shared/store/details/parameters'
+//DATA
+import i18n from '@/shared/data/i18n'
 
 interface SettingsModalProps {
   setIsActive: (_: boolean) => void
@@ -24,15 +26,20 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
     $ew: { ew, setEw },
   } = params
   const [input, setInput] = useState('')
+  const changeLang = i18n.language == 'ru' ? 'en' : 'ru'
   return (
     <ModalUi off={setIsActive}>
       <div className="df fdc">
-        <p>Max size: {ms}</p>
+        <p>
+          {t('main.settings.max_size')}: {ms}
+        </p>
         <RangeInputUi max={40} value={ms} onChange={setMs} />
       </div>
       <div>
         <div className="df fdc">
-          <p>Filter by price: {pf ? 'on' : 'off'}</p>
+          <p>
+            {t('main.settings.price')}: {pf ? 'on' : 'off'}
+          </p>
           <Switch
             color="secondary"
             style={{ color: '#e63946' }}
@@ -41,7 +48,9 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
           />
         </div>
         <div className="df fdc">
-          <p>Filter by name: {nf ? 'on' : 'off'}</p>
+          <p>
+            {t('main.settings.name')}: {nf ? 'on' : 'off'}
+          </p>
           <Switch
             color="secondary"
             style={{ color: '#e63946' }}
@@ -51,17 +60,25 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
         </div>
       </div>
       <div className="fz14">
-        <span>{t('main.filter.all')}</span>
+        <span>{t('main.settings.all')}</span>
         <Switch
           color="secondary"
           style={{ color: '#e63946' }}
           checked={on}
           onChange={() => setOn(!on)}
         />
-        <span>{t('main.filter.new')}</span>
+        <span>{t('main.settings.new')}</span>
       </div>
       <div>
         <TextAreaUi selected={ew} setSelected={setEw} val={input} onChange={setInput} />
+      </div>
+      <div>
+        <p>
+          {t('main.settings.lang.text')}: {i18n.language}
+        </p>
+        <button onClick={() => i18n.changeLanguage(changeLang)}>
+          {t('main.settings.lang.btn')} {changeLang}
+        </button>
       </div>
     </ModalUi>
   )

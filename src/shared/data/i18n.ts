@@ -3,7 +3,9 @@ import { initReactI18next } from 'react-i18next'
 
 const lang = navigator.language
 
-const finalLang = lang == 'be' || lang == 'ua' || lang == 'kz' ? 'ru' : 'en'
+const ruLangs = ['be', 'ua', 'kz', 'ru']
+
+export const finalLang = ruLangs.includes(lang) ? 'ru' : 'en'
 
 const resources = {
   en: {
@@ -14,11 +16,15 @@ const resources = {
         },
       },
       main: {
-        filter: {
+        settings: {
           all: 'All',
           new: 'Only new',
+          price: 'Filter by price',
+          name: 'Filter by name',
+          max_size: 'Max size',
+          lang: { text: 'Site language', btn: 'Change to' },
         },
-        preview: 'Please type product name',
+        preview: 'Please enter product name',
         error: 'Error, please try again!',
       },
     },
@@ -31,9 +37,13 @@ const resources = {
         },
       },
       main: {
-        filter: {
+        settings: {
           all: 'Все',
           new: 'Только новые',
+          price: 'Сортировать по цене',
+          name: 'Сортировать по имени',
+          max_size: 'Максимальное кол-во',
+          lang: { text: 'Язык сайта', btn: 'Изменить на' },
         },
         preview: 'Пожалуйста, введите имя продукта',
         error: 'Ошибка, попробуйте ещё раз!',
