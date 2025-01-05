@@ -27,6 +27,7 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
   } = params
   const [input, setInput] = useState('')
   const changeLang = i18n.language == 'ru' ? 'en' : 'ru'
+  const isActive = (_: boolean) => (_ ? 'on' : 'off')
   return (
     <ModalUi off={setIsActive}>
       <div className="df fdc">
@@ -38,7 +39,7 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
       <div>
         <div className="df fdc">
           <p>
-            {t('main.settings.price')}: {pf ? 'on' : 'off'}
+            {t('main.settings.price')}: {isActive(pf)}
           </p>
           <Switch
             color="secondary"
@@ -49,7 +50,7 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
         </div>
         <div className="df fdc">
           <p>
-            {t('main.settings.name')}: {nf ? 'on' : 'off'}
+            {t('main.settings.name')}: {isActive(nf)}
           </p>
           <Switch
             color="secondary"
@@ -59,15 +60,16 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
           />
         </div>
       </div>
-      <div className="fz14">
-        <span>{t('main.settings.all')}</span>
+      <div>
+        <p>
+          {t('main.settings.new')}: {isActive(on)}
+        </p>
         <Switch
           color="secondary"
           style={{ color: '#e63946' }}
           checked={on}
           onChange={() => setOn(!on)}
         />
-        <span>{t('main.settings.new')}</span>
       </div>
       <div>
         <TextAreaUi selected={ew} setSelected={setEw} val={input} onChange={setInput} />

@@ -30,12 +30,23 @@ class CardsApi extends Api<IMainData> {
   cards = mobxState<IPromiseBasedObservable<IMainData> | null>(null)('cards')
 
   // CARDS API ACTIONS
-  fetchMarkets = async (params: string) => {
+  /**
+   * Функция отправляет запрос на сервер с целью получения информации о запрашиваемом товаре с разных магазинов
+   *
+   *  @param query - Запрос пользователя в виде строки, который принимает функция
+   *
+   * В ней задействованы параметры фильтрации, которые не принимаются функцией, но берутся из других стейтов: @param ms - максимальное кол-во продуктов с каждого магазина
+      @param on - только новые
+   *  @param pf - фильтр по цене
+   *  @param nf - фильтр по имени
+   *  @param ew - слова, которые необходимо исключить из запроса
+   */
+  fetchMarkets = async (query: string) => {
     // JOIN EXCLUSION WORDS
     const ex_words = $ew.ew.join('|')
     // SET API PARAMS TO OBJECT
     const queryParams: Record<string, string | number | null> = {
-      q: params,
+      q: query,
       ms: $ms.ms,
       on: $on.on === false ? 'off' : null,
       pf: $pf.pf === false ? 'off' : null,

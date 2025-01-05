@@ -10,15 +10,26 @@ class SearchApiParametres {
 
   // FULL API DOCUMENTATION: https://github.com/koloideal/FindlyAPI
 
-  // ONLY NEW
+  /**
+    @param on - только новые
+   */
   $on = mobxState(true)('on')
-  // MAX SIZE
+  /**
+    @param ms - максимальное кол-во продуктов с каждого магазина
+   */
   $ms = mobxState(12)('ms')
-  // FILTER BY PRICE
+  /**
+    @param pf - фильтр по цене
+   */
   $pf = mobxState(true)('pf')
-  // FILTER BY NAME
+  /**
+    @param pf - фильтр по имени
+   */
   $nf = mobxState(true)('nf')
   // EXCLUSION WORDS
+  /**
+    @param ew - слова, которые необходимо исключить из запроса
+   */
   $ew = mobxState<string[]>([])('ew')
 }
 

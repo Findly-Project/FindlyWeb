@@ -17,7 +17,6 @@ const resources = {
       },
       main: {
         settings: {
-          all: 'All',
           new: 'Only new',
           price: 'Filter by price',
           name: 'Filter by name',
@@ -38,7 +37,6 @@ const resources = {
       },
       main: {
         settings: {
-          all: 'Все',
           new: 'Только новые',
           price: 'Сортировать по цене',
           name: 'Сортировать по имени',
@@ -60,7 +58,5 @@ i18n.use(initReactI18next).init({
     escapeValue: false,
   },
 })
-
-console.log(i18n.language)
 
 export default i18n
