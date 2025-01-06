@@ -6,7 +6,7 @@ interface ModalUiProps {
   children: React.ReactNode
 }
 
-export const ModalUi = ({ off, children }: ModalUiProps) => {
+export const ModalUi = ({ off, children, ...props }: ModalUiProps) => {
   return (
     <div className={`${s.modalBack} df jcc aic`} onClick={() => off(false)}>
       <motion.div
@@ -16,6 +16,7 @@ export const ModalUi = ({ off, children }: ModalUiProps) => {
         animate={{ scale: 1 }}
         exit={{ scale: 0.9 }}
         transition={{ ease: 'easeOut', duration: 0.3 }}
+        {...props}
       >
         {children}
       </motion.div>

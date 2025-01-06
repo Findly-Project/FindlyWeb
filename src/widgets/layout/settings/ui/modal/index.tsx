@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { observer } from 'mobx-react-lite'
+import s from './index.module.scss'
 //COMPONENTS
 import { RangeInputUi } from '@/shared/ui/input/range'
 import { ModalUi } from '@/shared/ui/modal'
@@ -17,6 +18,7 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
+  const [isVisual, setIsVisual] = useState(false)
   const { t } = useTranslation()
   const {
     $ms: { ms, setMs },
@@ -30,57 +32,80 @@ export const SettingsModal = observer(({ setIsActive }: SettingsModalProps) => {
   const isActive = (_: boolean) => (_ ? 'on' : 'off')
   return (
     <ModalUi off={setIsActive}>
-      <div className="df fdc">
-        <p>
-          {t('main.settings.max_size')}: {ms}
-        </p>
-        <RangeInputUi max={40} value={ms} onChange={setMs} />
-      </div>
-      <div>
-        <div className="df fdc">
-          <p>
-            {t('main.settings.price')}: {isActive(pf)}
-          </p>
-          <Switch
-            color="secondary"
-            style={{ color: '#e63946' }}
-            checked={pf}
-            onChange={() => setPf(!pf)}
-          />
+      <div className={s.modal}>
+        <h4>Settings</h4>
+        <div className={`${s.modalBtns} df aic jcc`}>
+          <button className={isVisual ? '' : s.active} onClick={() => setIsVisual(false)}>
+            Parameters
+          </button>
+          <button className={!isVisual ? '' : s.active} onClick={() => setIsVisual(true)}>
+            Visual
+          </button>
         </div>
-        <div className="df fdc">
-          <p>
-            {t('main.settings.name')}: {isActive(nf)}
-          </p>
-          <Switch
-            color="secondary"
-            style={{ color: '#e63946' }}
-            checked={nf}
-            onChange={() => setNf(!nf)}
-          />
+        <div className={`${s.modalContent} df fdc jcc`}>
+          {isVisual ? (
+            <div>
+              <p>
+                {t('main.settings.lang.text')}: {i18n.language}
+              </p>
+              <button onClick={() => i18n.changeLanguage(changeLang)}>
+                {t('main.settings.lang.btn')} {changeLang}
+              </button>
+            </div>
+          ) : (
+            <>
+              <div className="df fdc">
+                <p>
+                  {t('main.settings.max_size')}: {ms}
+                </p>
+                <RangeInputUi max={40} value={ms} onChange={setMs} />
+              </div>
+              <div>
+                <div className="df fdc">
+                  <p>
+                    {t('main.settings.price')}: {isActive(pf)}
+                  </p>
+                  <Switch
+                    color="secondary"
+                    style={{ color: '#e63946' }}
+                    checked={pf}
+                    onChange={() => setPf(!pf)}
+                  />
+                </div>
+                <div className="df fdc">
+                  <p>
+                    {t('main.settings.name')}: {isActive(nf)}
+                  </p>
+                  <Switch
+                    color="secondary"
+                    style={{ color: '#e63946' }}
+                    checked={nf}
+                    onChange={() => setNf(!nf)}
+                  />
+                </div>
+              </div>
+              <div>
+                <p>
+                  {t('main.settings.new')}: {isActive(on)}
+                </p>
+                <Switch
+                  color="secondary"
+                  style={{ color: '#e63946' }}
+                  checked={on}
+                  onChange={() => setOn(!on)}
+                />
+              </div>
+              <div>
+                <TextAreaUi
+                  selected={ew}
+                  setSelected={setEw}
+                  val={input}
+                  onChange={setInput}
+                />
+              </div>
+            </>
+          )}
         </div>
-      </div>
-      <div>
-        <p>
-          {t('main.settings.new')}: {isActive(on)}
-        </p>
-        <Switch
-          color="secondary"
-          style={{ color: '#e63946' }}
-          checked={on}
-          onChange={() => setOn(!on)}
-        />
-      </div>
-      <div>
-        <TextAreaUi selected={ew} setSelected={setEw} val={input} onChange={setInput} />
-      </div>
-      <div>
-        <p>
-          {t('main.settings.lang.text')}: {i18n.language}
-        </p>
-        <button onClick={() => i18n.changeLanguage(changeLang)}>
-          {t('main.settings.lang.btn')} {changeLang}
-        </button>
       </div>
     </ModalUi>
   )

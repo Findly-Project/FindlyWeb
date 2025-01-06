@@ -28,7 +28,12 @@ export const TextAreaUi = ({ val, onChange, selected, setSelected }: TextAreaUiP
           <button onClick={() => setSelected(selected.filter((_w, $) => $ != _))}>x</button>
         </div>
       ))}
-      <input value={val} onChange={e => onChange(e.target.value)} onKeyDown={handleKeyDown} />
+      <input
+        value={val}
+        onChange={e => onChange(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder="Enter exclusion words"
+      />
     </div>
   )
 }

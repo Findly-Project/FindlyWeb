@@ -9,6 +9,10 @@
   z-index: 100;
   .modalContent {
     position: relative;
+    width: 70%;
+    max-width: 500px;
+    height: 60%;
+    max-height: 400px;
     padding: 10px 15px;
     background-color: #202020;
     border-radius: 10px;
