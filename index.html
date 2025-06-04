@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindlyWeb - Поиск товаров</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Главная страница -->
+    <div id="home-page" class="home-page">
+        <div class="home-container">
+            <h1 class="logo">FindlyWeb</h1>
+            <div class="search-container">
+                <form id="search-form" class="search-form">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        class="search-input form-control" 
+                        placeholder="Введите название товара для поиска"
+                        autocomplete="off"
+                    >
+                    <button type="submit" class="search-button btn btn--primary">
+                        Найти
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Страница результатов -->
+    <div id="results-page" class="results-page hidden">
+        <!-- Поисковая строка вверху -->
+        <header class="results-header">
+            <div class="container">
+                <div class="results-search-container">
+                    <h1 class="results-logo">FindlyWeb</h1>
+                    <form id="results-search-form" class="results-search-form">
+                        <input 
+                            type="text" 
+                            id="results-search-input" 
+                            class="search-input form-control" 
+                            placeholder="Введите название товара для поиска"
+                            autocomplete="off"
+                        >
+                        <button type="submit" class="search-button btn btn--primary btn--sm">
+                            Найти
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <!-- Основной контент -->
+        <main class="results-main">
+            <div class="container">
+                <!-- Индикатор загрузки -->
+                <div id="loading-indicator" class="loading-indicator hidden">
+                    <div class="loading-spinner"></div>
+                    <p>Поиск товаров...</p>
+                </div>
+
+                <!-- Сообщения об ошибках -->
+                <div id="error-message" class="error-message hidden">
+                    <div class="status status--error">
+                        <span id="error-text">Ошибка при поиске товаров</span>
+                    </div>
+                </div>
+
+                <!-- Вкладки маркетплейсов -->
+                <div id="marketplace-tabs" class="marketplace-tabs hidden">
+                    <div class="tabs-container">
+                        <button class="tab-button active" data-marketplace="MMG">
+                            <span class="tab-name">MMG</span>
+                            <span class="tab-count" id="count-MMG">0</span>
+                        </button>
+                        <button class="tab-button" data-marketplace="Onliner">
+                            <span class="tab-name">Onliner</span>
+                            <span class="tab-count" id="count-Onliner">0</span>
+                        </button>
+                        <button class="tab-button" data-marketplace="Kufar">
+                            <span class="tab-name">Kufar</span>
+                            <span class="tab-count" id="count-Kufar">0</span>
+                        </button>
+                        <button class="tab-button" data-marketplace="21vek">
+                            <span class="tab-name">21vek</span>
+                            <span class="tab-count" id="count-21vek">0</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Результаты поиска -->
+                <div id="search-results" class="search-results hidden">
+                    <!-- Контейнеры для каждого маркетплейса -->
+                    <div id="results-MMG" class="marketplace-results active">
+                        <div class="products-grid" id="products-MMG"></div>
+                    </div>
+                    <div id="results-Onliner" class="marketplace-results">
+                        <div class="products-grid" id="products-Onliner"></div>
+                    </div>
+                    <div id="results-Kufar" class="marketplace-results">
+                        <div class="products-grid" id="products-Kufar"></div>
+                    </div>
+                    <div id="results-21vek" class="marketplace-results">
+                        <div class="products-grid" id="products-21vek"></div>
+                    </div>
+                </div>
+
+                <!-- Сообщение "нет результатов" -->
+                <div id="no-results" class="no-results hidden">
+                    <div class="status status--info">
+                        Товары не найдены
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
