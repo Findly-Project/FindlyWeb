@@ -134,8 +134,7 @@ class FindlyWeb {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
             clearTimeout(timeoutId);
             throw error;
@@ -248,7 +247,7 @@ class FindlyWeb {
     createProductCard(product) {
         const card = document.createElement('a');
         card.className = 'product-card';
-        card.href = product.url || '#';
+        card.href = product.link || '#';
         card.target = '_blank';
         card.rel = 'noopener noreferrer';
 
@@ -258,7 +257,7 @@ class FindlyWeb {
         if (product.image && product.image.trim()) {
             const img = document.createElement('img');
             img.src = product.image;
-            img.alt = product.title || 'Товар';
+            img.alt = product.name || 'Товар';
             img.onerror = () => {
                 img.style.display = 'none';
                 imageContainer.textContent = 'Изображение недоступно';
@@ -273,11 +272,11 @@ class FindlyWeb {
 
         const title = document.createElement('div');
         title.className = 'product-title';
-        title.textContent = product.title || 'Название товара';
+        title.textContent = product.name || 'Название товара';
 
         const price = document.createElement('div');
         price.className = 'product-price';
-        price.textContent = product.price || 'Цена не указана';
+        price.textContent = product.price + ' BYN' || 'Цена не указана';
 
         productInfo.appendChild(title);
         productInfo.appendChild(price);
