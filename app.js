@@ -60,7 +60,10 @@ class FindlyWeb {
 
         // Возврат на главную по клику на логотип
         this.resultsLogo.addEventListener('click', () => {
-            this.showHomePage();
+            this.homePage.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
         });
     }
 
@@ -70,10 +73,20 @@ class FindlyWeb {
             return;
         }
 
-        console.log('Starting search for:', query);
+        const startTime = performance.now();
+        console.log(`Начало поиска: ${startTime.toFixed(2)} мс`);
         
         this.currentQuery = query;
         this.showResultsPage();
+        setTimeout(() => {
+            const loadingIndicator = document.getElementById('loading-indicator');
+            if (loadingIndicator) {
+                loadingIndicator.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        }, 100);
         this.showLoading();
         this.hideError();
         this.hideResults();
@@ -84,6 +97,11 @@ class FindlyWeb {
 
         try {
             const results = await this.searchProducts(query);
+            const endTime = performance.now();
+            const searchDuration = endTime - startTime;
+
+            this.displaySearchTime(searchDuration);
+            this.displayResults(results);
             console.log('Search results:', results);
             this.searchResults = results;
             this.displayResults(results);
@@ -112,12 +130,17 @@ class FindlyWeb {
         }
     }
 
+    displaySearchTime(duration) {
+      const timeContainer = document.getElementById('search-time');
+      timeContainer.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
+    }
+
     async searchProducts(query) {
         const url = `${this.apiBaseUrl}${this.searchEndpoint}?q=${encodeURIComponent(query)}&ms=40`;
         console.log('Fetching from URL:', url);
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 секунд таймаут
+        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 секунд таймаут
         
         try {
             const response = await fetch(url, {
@@ -198,35 +221,45 @@ class FindlyWeb {
         let hasAnyResults = false;
 
         // Обновляем счетчики в вкладках и отображаем товары
+        const marketplaceStatus = {};
+        this.marketplaces.forEach(mp => {
+           const count = (productsData[mp] || []).length;
+           marketplaceStatus[mp] = count > 0;
+        });
+
+        // Обновление интерфейса
         this.marketplaces.forEach(marketplace => {
-            const products = productsData[marketplace] || [];
-            const count = products.length;
-            
-            if (count > 0) {
-                hasAnyResults = true;
-            }
+           const products = productsData[marketplace] || [];
+           const count = products.length;
+           const tabElement = document.querySelector(`[data-marketplace="${marketplace}"]`);
+           const countElement = document.getElementById(`count-${marketplace}`);
 
-            // Обновляем счетчик
-            const countElement = document.getElementById(`count-${marketplace}`);
-            if (countElement) {
-                countElement.textContent = count;
-            }
-
-            // Отображаем товары
-            this.renderMarketplaceProducts(marketplace, products);
+           if (count > 0) {
+             hasAnyResults = true;
+             tabElement.classList.remove('hidden');
+             countElement.textContent = count;
+             this.renderMarketplaceProducts(marketplace, products);
+           } else {
+             tabElement.classList.add('hidden');
+             countElement.textContent = '';
+           }
         });
 
         if (hasAnyResults) {
             this.showResults();
-            // Переключаемся на первый маркетплейс с результатами
-            const firstMarketplaceWithResults = this.marketplaces.find(mp => 
-                productsData[mp] && productsData[mp].length > 0
-            );
-            if (firstMarketplaceWithResults) {
-                this.switchMarketplace(firstMarketplaceWithResults);
-            } else {
-                this.switchMarketplace('MMG');
-            }
+                setTimeout(() => {
+                const marketplaceTabs = document.getElementById('marketplace-tabs');
+                if (marketplaceTabs) {
+                    marketplaceTabs.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }, 300);
+            const firstVisible = this.marketplaces.find(mp =>
+            marketplaceStatus[mp] && !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
+        );
+        this.switchMarketplace(firstVisible || 'MMG');
         } else {
             this.showNoResults();
         }
@@ -288,6 +321,13 @@ class FindlyWeb {
     }
 
     switchMarketplace(marketplace) {
+        const visibleMarketplaces = this.marketplaces.filter(mp =>
+            !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
+          );
+
+          if (!visibleMarketplaces.includes(marketplace)) {
+            marketplace = visibleMarketplaces[0] || 'MMG';
+          }
         this.currentMarketplace = marketplace;
 
         // Обновляем активную вкладку
