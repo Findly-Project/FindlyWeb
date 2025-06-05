@@ -6,6 +6,9 @@ class FindlyWeb {
         this.currentQuery = '';
         this.currentMarketplace = 'MMG';
         this.searchResults = {};
+
+        this.maxSizeSelect = document.getElementById('max-size-select');
+        this.maxSize = 10;
         
         this.filters = {
             onlyNew: false,
@@ -92,6 +95,12 @@ class FindlyWeb {
                 }
             });
         }
+        this.maxSizeSelect.addEventListener('change', (e) => {
+            this.maxSize = parseInt(e.target.value, 10);
+            this.updateUrlParams();
+            // handleSearch НЕ вызываем, поиск только по кнопке!
+        });
+
     }
 
     restoreFiltersFromUrl() {
@@ -99,6 +108,15 @@ class FindlyWeb {
         this.filters.onlyNew = params.get('on') === 'on';
         this.filters.nameFilter = params.get('nf') === 'on';
         this.filters.priceFilter = params.get('pf') === 'on';
+
+        const ms = parseInt(params.get('ms'), 10);
+        if ([10, 20, 30, 40].includes(ms)) {
+            this.maxSize = ms;
+            this.maxSizeSelect.value = ms;
+        } else {
+            this.maxSize = 10;
+            this.maxSizeSelect.value = 10;
+        }
 
         // Синхронизировать чекбоксы
         this.filterCheckboxes.forEach(cb => {
@@ -111,6 +129,7 @@ class FindlyWeb {
         if (this.filters.onlyNew) params.set('on', 'on'); else params.set('on', 'off');
         if (this.filters.nameFilter) params.set('nf', 'on'); else params.set('nf', 'off');
         if (this.filters.priceFilter) params.set('pf', 'on'); else params.set('pf', 'off');
+        params.set('ms', this.maxSize);
         window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
     }
 
@@ -212,6 +231,7 @@ class FindlyWeb {
     async searchProducts(query) {
         const url = new URL(this.apiBaseUrl + this.searchEndpoint);
         url.searchParams.set('q', query);
+        url.searchParams.set('ms', this.maxSize);
         if (this.filters.onlyNew) {
             url.searchParams.set('on', 'on');
         } else {
@@ -438,7 +458,7 @@ class FindlyWeb {
     const params = new URLSearchParams(window.location.search);
 
     // Укажите здесь дефолтные значения (например, on=off, nf=off, pf=off)
-    const defaults = { on: 'off', nf: 'off', pf: 'off' };
+    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: '30' };
     let needRedirect = false;
 
     for (const key in defaults) {
