@@ -249,8 +249,9 @@ class FindlyWeb {
             this.showResults();
                 setTimeout(() => {
                 const marketplaceTabs = document.getElementById('marketplace-tabs');
+                const resultsHeader = document.getElementById('results-header')
                 if (marketplaceTabs) {
-                    marketplaceTabs.scrollIntoView({
+                    resultsHeader.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
@@ -350,16 +351,7 @@ class FindlyWeb {
         });
     }
 
-    showHomePage() {
-        this.homePage.classList.remove('hidden');
-        this.resultsPage.classList.add('hidden');
-        this.homeSearchInput.value = '';
-        this.resultsSearchInput.value = '';
-        this.currentQuery = '';
-    }
-
     showResultsPage() {
-        this.homePage.classList.add('hidden');
         this.resultsPage.classList.remove('hidden');
     }
 
