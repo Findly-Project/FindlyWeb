@@ -7,21 +7,34 @@ class FindlyWeb {
         this.currentMarketplace = 'MMG';
         this.searchResults = {};
         
-        this.initializeElements();
+        this.filters = {
+            onlyNew: false,
+            nameFilter: false,
+            priceFilter: false
+        };
+
+        this.initElements();
+        this.initEvents();
+        this.restoreFiltersFromUrl();
         this.bindEvents();
     }
 
-    initializeElements() {
-        // Страницы
+    initElements() {
+        // Настройки
+        this.settingsButton = document.getElementById('settings-button');
+        this.settingsMenu = document.getElementById('settings-menu');
+        this.filterCheckboxes = this.settingsMenu.querySelectorAll('.filter-checkbox');
+
+        // Поиск
         this.homePage = document.getElementById('home-page');
         this.resultsPage = document.getElementById('results-page');
-        
+
         // Поисковые формы и поля
         this.homeSearchForm = document.getElementById('search-form');
         this.homeSearchInput = document.getElementById('search-input');
         this.resultsSearchForm = document.getElementById('results-search-form');
         this.resultsSearchInput = document.getElementById('results-search-input');
-        
+
         // Элементы результатов
         this.loadingIndicator = document.getElementById('loading-indicator');
         this.errorMessage = document.getElementById('error-message');
@@ -29,12 +42,79 @@ class FindlyWeb {
         this.marketplaceTabs = document.getElementById('marketplace-tabs');
         this.searchResultsContainer = document.getElementById('search-results');
         this.noResults = document.getElementById('no-results');
-        
+
         // Вкладки
         this.tabButtons = document.querySelectorAll('.tab-button');
-        
+
         // Логотип для возврата на главную
         this.resultsLogo = document.querySelector('.results-logo');
+    }
+
+    initEvents() {
+        // Открытие/закрытие меню
+        this.settingsButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.settingsMenu.classList.toggle('hidden');
+        });
+        // Клик вне меню - закрыть
+        document.addEventListener('click', (e) => {
+            if (!this.settingsMenu.contains(e.target) && e.target !== this.settingsButton) {
+                this.settingsMenu.classList.add('hidden');
+            }
+        });
+        // Чекбоксы фильтров
+        this.filterCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', (e) => {
+                const filter = e.target.dataset.filter;
+                this.filters[filter] = e.target.checked;
+                this.updateUrlParams();
+                if (this.currentQuery) {
+                    this.handleSearch(this.currentQuery); // обновить результаты при изменении фильтра
+                }
+            });
+        });
+
+        // Пример: обработка поиска
+        if (this.searchForm) {
+            this.searchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const query = this.searchInput.value.trim();
+                if (query) {
+                    this.currentQuery = query;
+                    this.handleSearch(query);
+                }
+            });
+        }
+        if (this.resultsSearchForm) {
+            this.resultsSearchForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const query = this.resultsSearchInput.value.trim();
+                if (query) {
+                    this.currentQuery = query;
+                    this.handleSearch(query);
+                }
+            });
+        }
+    }
+
+    restoreFiltersFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        this.filters.onlyNew = params.get('on') === 'on';
+        this.filters.nameFilter = params.get('nf') === 'on';
+        this.filters.priceFilter = params.get('pf') === 'on';
+
+        // Синхронизировать чекбоксы
+        this.filterCheckboxes.forEach(cb => {
+            cb.checked = this.filters[cb.dataset.filter];
+        });
+    }
+
+    updateUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        if (this.filters.onlyNew) params.set('on', 'on'); else params.set('on', 'off');
+        if (this.filters.nameFilter) params.set('nf', 'on'); else params.set('nf', 'off');
+        if (this.filters.priceFilter) params.set('pf', 'on'); else params.set('pf', 'off');
+        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
     }
 
     bindEvents() {
@@ -136,7 +216,26 @@ class FindlyWeb {
     }
 
     async searchProducts(query) {
-        const url = `${this.apiBaseUrl}${this.searchEndpoint}?q=${encodeURIComponent(query)}&ms=40`;
+        const url = new URL(this.apiBaseUrl + this.searchEndpoint);
+        url.searchParams.set('q', query);
+        if (this.filters.onlyNew) {
+            url.searchParams.set('on', 'on');
+        } else {
+            url.searchParams.set('on', 'off');
+        }
+
+        if (this.filters.nameFilter) {
+            url.searchParams.set('nf', 'on');
+        } else {
+            url.searchParams.set('nf', 'off');
+        }
+
+        if (this.filters.priceFilter){
+            url.searchParams.set('pf', 'on');
+        } else {
+            url.searchParams.set('pf', 'off');
+        }
+
         console.log('Fetching from URL:', url);
         
         const controller = new AbortController();
@@ -220,7 +319,7 @@ class FindlyWeb {
         const productsData = results.products_data;
         let hasAnyResults = false;
 
-        // Обновляем счетчики в вкладках и отображаем товары
+        // Обновляем счетчики во вкладках и отображаем товары
         const marketplaceStatus = {};
         this.marketplaces.forEach(mp => {
            const count = (productsData[mp] || []).length;
@@ -248,14 +347,11 @@ class FindlyWeb {
         if (hasAnyResults) {
             this.showResults();
                 setTimeout(() => {
-                const marketplaceTabs = document.getElementById('marketplace-tabs');
                 const resultsHeader = document.getElementById('results-header')
-                if (marketplaceTabs) {
-                    resultsHeader.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
+                resultsHeader.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }, 300);
             const firstVisible = this.marketplaces.find(mp =>
             marketplaceStatus[mp] && !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
@@ -392,7 +488,6 @@ class FindlyWeb {
 }
 
 // Инициализация приложения
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Initializing FindlyWeb application...');
-    new FindlyWeb();
+window.addEventListener('DOMContentLoaded', () => {
+    window.findlyWeb = new FindlyWeb();
 });

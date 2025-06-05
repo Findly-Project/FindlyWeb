@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FindlyWeb - Поиск товаров</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome для иконки настроек -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <!-- Главная страница -->
@@ -13,10 +15,10 @@
             <h1 class="logo">FindlyWeb</h1>
             <div class="search-container">
                 <form id="search-form" class="search-form">
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        class="search-input form-control" 
+                    <input
+                        type="text"
+                        id="search-input"
+                        class="search-input form-control"
                         placeholder="Введите название товара для поиска"
                         autocomplete="off"
                     >
@@ -36,10 +38,10 @@
                 <div class="results-search-container">
                     <h1 class="results-logo">FindlyWeb</h1>
                     <form id="results-search-form" class="results-search-form">
-                        <input 
-                            type="text" 
-                            id="results-search-input" 
-                            class="search-input form-control" 
+                        <input
+                            type="text"
+                            id="results-search-input"
+                            class="search-input form-control"
                             placeholder="Введите название товара для поиска"
                             autocomplete="off"
                         >
@@ -111,6 +113,28 @@
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- Кнопка и меню настроек -->
+    <button id="settings-button" class="settings-button" title="Настройки поиска">
+        <i class="fas fa-cog"></i>
+    </button>
+    <div id="settings-menu" class="settings-menu hidden">
+        <div class="settings-section">
+            <h4>Параметры поиска</h4>
+            <label>
+                <input type="checkbox" class="filter-checkbox" data-filter="onlyNew">
+                Только новые товары
+            </label>
+            <label>
+                <input type="checkbox" class="filter-checkbox" data-filter="nameFilter">
+                Фильтр по имени
+            </label>
+            <label>
+                <input type="checkbox" class="filter-checkbox" data-filter="priceFilter">
+                Фильтр по цене
+            </label>
+        </div>
     </div>
 
     <script src="app.js"></script>
