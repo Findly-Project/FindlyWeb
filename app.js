@@ -9,17 +9,19 @@ class FindlyWeb {
 
         this.maxSizeSelect = document.getElementById('max-size-select');
         this.maxSize = 10;
-        
+
         this.filters = {
             onlyNew: false,
             nameFilter: false,
-            priceFilter: false
-        };
+            priceFilter: false,
+            excludeWords: []
+        }
 
         this.initElements();
         this.initEvents();
         this.restoreFiltersFromUrl();
         this.bindEvents();
+        this.renderExcludeWords();
     }
 
     initElements() {
@@ -51,6 +53,11 @@ class FindlyWeb {
 
         // Логотип для возврата на главную
         this.resultsLogo = document.querySelector('.results-logo');
+
+        // Элементы для excludeWords
+        this.excludeWordInput = document.getElementById('exclude-word-input');
+        this.addExcludeWordBtn = document.getElementById('add-exclude-word');
+        this.excludeWordsList = document.getElementById('exclude-words-list');
     }
 
     initEvents() {
@@ -74,11 +81,22 @@ class FindlyWeb {
             });
         });
 
+        // Обработка добавления исключаемого слова
+        if (this.addExcludeWordBtn && this.excludeWordInput) {
+            this.addExcludeWordBtn.addEventListener('click', () => this.addExcludeWord());
+            this.excludeWordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.addExcludeWord();
+                }
+            });
+        }
+
         // Пример: обработка поиска
-        if (this.searchForm) {
-            this.searchForm.addEventListener('submit', (e) => {
+        if (this.homeSearchForm) {
+            this.homeSearchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
-                const query = this.searchInput.value.trim();
+                const query = this.homeSearchInput.value.trim();
                 if (query) {
                     this.currentQuery = query;
                     this.handleSearch(query);
@@ -98,9 +116,7 @@ class FindlyWeb {
         this.maxSizeSelect.addEventListener('change', (e) => {
             this.maxSize = parseInt(e.target.value, 10);
             this.updateUrlParams();
-            // handleSearch НЕ вызываем, поиск только по кнопке!
         });
-
     }
 
     restoreFiltersFromUrl() {
@@ -108,6 +124,14 @@ class FindlyWeb {
         this.filters.onlyNew = params.get('on') === 'on';
         this.filters.nameFilter = params.get('nf') === 'on';
         this.filters.priceFilter = params.get('pf') === 'on';
+
+        // ew (exclude words)
+        const ew = params.get('ew');
+        if (ew) {
+            this.filters.excludeWords = ew.split('|').filter(Boolean);
+        } else {
+            this.filters.excludeWords = [];
+        }
 
         const ms = parseInt(params.get('ms'), 10);
         if ([10, 20, 30, 40].includes(ms)) {
@@ -122,6 +146,8 @@ class FindlyWeb {
         this.filterCheckboxes.forEach(cb => {
             cb.checked = this.filters[cb.dataset.filter];
         });
+
+        this.renderExcludeWords();
     }
 
     updateUrlParams() {
@@ -130,7 +156,51 @@ class FindlyWeb {
         if (this.filters.nameFilter) params.set('nf', 'on'); else params.set('nf', 'off');
         if (this.filters.priceFilter) params.set('pf', 'on'); else params.set('pf', 'off');
         params.set('ms', this.maxSize);
+
+        // ew
+        if (this.filters.excludeWords.length > 0) {
+            params.set('ew', this.filters.excludeWords.join('|'));
+        } else {
+            params.delete('ew');
+        }
+
         window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    }
+
+    addExcludeWord() {
+        const word = this.excludeWordInput.value.trim();
+        if (word && !this.filters.excludeWords.includes(word)) {
+            this.filters.excludeWords.push(word);
+            this.renderExcludeWords();
+            this.updateUrlParams();
+        }
+        this.excludeWordInput.value = '';
+    }
+
+    removeExcludeWord(word) {
+        this.filters.excludeWords = this.filters.excludeWords.filter(w => w !== word);
+        this.renderExcludeWords();
+        this.updateUrlParams();
+    }
+
+    renderExcludeWords() {
+        if (!this.excludeWordsList) return;
+        this.excludeWordsList.innerHTML = '';
+        this.filters.excludeWords.forEach(word => {
+            const chip = document.createElement('span');
+            chip.className = 'exclude-word-chip';
+            chip.textContent = word;
+            const btn = document.createElement('button');
+            btn.innerHTML = '&times;';
+            btn.title = 'Удалить';
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.removeExcludeWord(word);
+            });
+
+            chip.appendChild(btn);
+            this.excludeWordsList.appendChild(chip);
+        });
     }
 
     bindEvents() {
@@ -138,12 +208,16 @@ class FindlyWeb {
         this.homeSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSearch(this.homeSearchInput.value.trim());
+            const searchTime = document.getElementById("search-time")
+            searchTime.classList.add("hidden")
         });
 
         // Обработка поиска со страницы результатов
         this.resultsSearchForm.addEventListener('submit', (e) => {
             e.preventDefault();
             this.handleSearch(this.resultsSearchInput.value.trim());
+            const searchTime = document.getElementById("search-time")
+            searchTime.classList.add("hidden")
         });
 
         // Переключение вкладок маркетплейсов
@@ -171,7 +245,7 @@ class FindlyWeb {
 
         const startTime = performance.now();
         console.log(`Начало поиска: ${startTime.toFixed(2)} мс`);
-        
+
         this.currentQuery = query;
         this.showResultsPage();
         setTimeout(() => {
@@ -197,16 +271,18 @@ class FindlyWeb {
             const searchDuration = endTime - startTime;
 
             this.displaySearchTime(searchDuration);
+            const searchTime = document.getElementById("search-time")
+            searchTime.classList.remove("hidden")
             this.displayResults(results);
             console.log('Search results:', results);
             this.searchResults = results;
             this.displayResults(results);
         } catch (error) {
             console.error('Search error:', error);
-            
+
             // Определяем тип ошибки для более точного сообщения
             let errorMessage = 'Ошибка при поиске товаров';
-            
+
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 errorMessage = 'Не удается подключиться к серверу. Убедитесь, что API запущен на 127.0.0.1:8000';
             } else if (error.message.includes('CORS')) {
@@ -216,7 +292,7 @@ class FindlyWeb {
             } else if (error.message.includes('500')) {
                 errorMessage = 'Внутренняя ошибка сервера';
             }
-            
+
             this.showError(errorMessage);
         } finally {
             this.hideLoading();
@@ -224,8 +300,8 @@ class FindlyWeb {
     }
 
     displaySearchTime(duration) {
-      const timeContainer = document.getElementById('search-time');
-      timeContainer.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
+        const timeContainer = document.getElementById('search-time');
+        timeContainer.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
     }
 
     async searchProducts(query) {
@@ -244,17 +320,21 @@ class FindlyWeb {
             url.searchParams.set('nf', 'off');
         }
 
-        if (this.filters.priceFilter){
+        if (this.filters.priceFilter) {
             url.searchParams.set('pf', 'on');
         } else {
             url.searchParams.set('pf', 'off');
         }
 
+        if (this.filters.excludeWords && this.filters.excludeWords.length > 0) {
+            url.searchParams.set('ew', this.filters.excludeWords.join('|'));
+        }
+
         console.log('Fetching from URL:', url);
-        
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 секунд таймаут
-        
+
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -289,31 +369,31 @@ class FindlyWeb {
         // Обновляем счетчики во вкладках и отображаем товары
         const marketplaceStatus = {};
         this.marketplaces.forEach(mp => {
-           const count = (productsData[mp] || []).length;
-           marketplaceStatus[mp] = count > 0;
+            const count = (productsData[mp] || []).length;
+            marketplaceStatus[mp] = count > 0;
         });
 
         // Обновление интерфейса
         this.marketplaces.forEach(marketplace => {
-           const products = productsData[marketplace] || [];
-           const count = products.length;
-           const tabElement = document.querySelector(`[data-marketplace="${marketplace}"]`);
-           const countElement = document.getElementById(`count-${marketplace}`);
+            const products = productsData[marketplace] || [];
+            const count = products.length;
+            const tabElement = document.querySelector(`[data-marketplace="${marketplace}"]`);
+            const countElement = document.getElementById(`count-${marketplace}`);
 
-           if (count > 0) {
-             hasAnyResults = true;
-             tabElement.classList.remove('hidden');
-             countElement.textContent = count;
-             this.renderMarketplaceProducts(marketplace, products);
-           } else {
-             tabElement.classList.add('hidden');
-             countElement.textContent = '';
-           }
+            if (count > 0) {
+                hasAnyResults = true;
+                tabElement.classList.remove('hidden');
+                countElement.textContent = count;
+                this.renderMarketplaceProducts(marketplace, products);
+            } else {
+                tabElement.classList.add('hidden');
+                countElement.textContent = '';
+            }
         });
 
         if (hasAnyResults) {
             this.showResults();
-                setTimeout(() => {
+            setTimeout(() => {
                 const resultsHeader = document.getElementById('results-header')
                 resultsHeader.scrollIntoView({
                     behavior: 'smooth',
@@ -321,9 +401,9 @@ class FindlyWeb {
                 });
             }, 300);
             const firstVisible = this.marketplaces.find(mp =>
-            marketplaceStatus[mp] && !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
-        );
-        this.switchMarketplace(firstVisible || 'MMG');
+                marketplaceStatus[mp] && !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
+            );
+            this.switchMarketplace(firstVisible || 'MMG');
         } else {
             this.showNoResults();
         }
@@ -387,11 +467,11 @@ class FindlyWeb {
     switchMarketplace(marketplace) {
         const visibleMarketplaces = this.marketplaces.filter(mp =>
             !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
-          );
+        );
 
-          if (!visibleMarketplaces.includes(marketplace)) {
+        if (!visibleMarketplaces.includes(marketplace)) {
             marketplace = visibleMarketplaces[0] || 'MMG';
-          }
+        }
         this.currentMarketplace = marketplace;
 
         // Обновляем активную вкладку

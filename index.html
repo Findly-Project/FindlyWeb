@@ -22,7 +22,7 @@
                         placeholder="Введите название товара для поиска"
                         autocomplete="off"
                     >
-                    <button type="submit" class="search-button btn btn--primary">
+                    <button type="submit" class="search-button btn btn--primary" id="main-search-button">
                         Найти
                     </button>
                 </form>
@@ -143,6 +143,12 @@
                     <option value="40">40</option>
                 </select>
             </label>
+            <label>Исключить слова:</label>
+          <div class="exclude-words-ui">
+            <input type="text" id="exclude-word-input" placeholder="Введите слово" />
+            <button type="button" id="add-exclude-word">Добавить</button>
+          </div>
+          <div id="exclude-words-list" class="exclude-words-list"></div>
         </div>
     </div>
 
