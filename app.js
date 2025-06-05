@@ -68,9 +68,6 @@ class FindlyWeb {
                 const filter = e.target.dataset.filter;
                 this.filters[filter] = e.target.checked;
                 this.updateUrlParams();
-                if (this.currentQuery) {
-                    this.handleSearch(this.currentQuery); // обновить результаты при изменении фильтра
-                }
             });
         });
 
@@ -202,9 +199,6 @@ class FindlyWeb {
             }
             
             this.showError(errorMessage);
-            
-            // Показываем демонстрационные результаты для тестирования интерфейса
-            this.showDemoResults(query);
         } finally {
             this.hideLoading();
         }
@@ -261,53 +255,6 @@ class FindlyWeb {
             clearTimeout(timeoutId);
             throw error;
         }
-    }
-
-    // Демонстрационные результаты для тестирования интерфейса
-    showDemoResults(query) {
-        console.log('Showing demo results for:', query);
-        
-        const demoResults = {
-            request_metadata: {
-                query: query,
-                marketplaces: this.marketplaces
-            },
-            products_data: {
-                MMG: [
-                    {
-                        title: `${query} - Демо товар MMG 1`,
-                        price: '1500 BYN',
-                        image: '',
-                        url: 'https://mmg.by'
-                    },
-                    {
-                        title: `${query} - Демо товар MMG 2`,
-                        price: '2000 BYN',
-                        image: '',
-                        url: 'https://mmg.by'
-                    }
-                ],
-                Onliner: [
-                    {
-                        title: `${query} - Демо товар Onliner`,
-                        price: '1800 BYN',
-                        image: '',
-                        url: 'https://onliner.by'
-                    }
-                ],
-                Kufar: [],
-                '21vek': [
-                    {
-                        title: `${query} - Демо товар 21vek`,
-                        price: '1600 BYN',
-                        image: '',
-                        url: 'https://21vek.by'
-                    }
-                ]
-            }
-        };
-        
-        this.displayResults(demoResults);
     }
 
     displayResults(results) {
@@ -486,6 +433,26 @@ class FindlyWeb {
         this.noResults.classList.remove('hidden');
     }
 }
+
+(function redirectToDefaultParams() {
+    const params = new URLSearchParams(window.location.search);
+
+    // Укажите здесь дефолтные значения (например, on=off, nf=off, pf=off)
+    const defaults = { on: 'off', nf: 'off', pf: 'off' };
+    let needRedirect = false;
+
+    for (const key in defaults) {
+        if (!params.has(key)) {
+            params.set(key, defaults[key]);
+            needRedirect = true;
+        }
+    }
+
+    if (needRedirect) {
+        // Заменяем текущий URL (без добавления в историю)
+        window.location.replace(`${window.location.pathname}?${params.toString()}`);
+    }
+})();
 
 // Инициализация приложения
 window.addEventListener('DOMContentLoaded', () => {
