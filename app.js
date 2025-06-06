@@ -134,9 +134,14 @@ class FindlyWeb {
         this.maxSizeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             isOpen = !isOpen;
-            this.maxSizeList.hidden = !isOpen;
-            this.maxSizeBtn.setAttribute('aria-expanded', isOpen);
-            if (isOpen) this.maxSizeList.focus();
+            if (isOpen) {
+                this.maxSizeList.classList.add('open');
+                this.maxSizeBtn.setAttribute('aria-expanded', true);
+                this.maxSizeList.focus();
+            } else {
+                this.maxSizeList.classList.remove('open');
+                this.maxSizeBtn.setAttribute('aria-expanded', false);
+            }
         });
 
         this.maxSizeOptionEls.forEach(option => {
@@ -146,7 +151,7 @@ class FindlyWeb {
                 this.maxSize = value;
                 this.maxSizeBtn.childNodes[0].nodeValue = value + ' ';
                 this.updateUrlParams();
-                this.maxSizeList.hidden = true;
+                this.maxSizeList.classList.remove('open');
                 isOpen = false;
                 this.maxSizeBtn.setAttribute('aria-expanded', false);
             });
@@ -155,7 +160,7 @@ class FindlyWeb {
         // Закрытие при клике вне меню
         document.addEventListener('click', (e) => {
             if (isOpen && !this.maxSizeDropdown.contains(e.target)) {
-                this.maxSizeList.hidden = true;
+                this.maxSizeList.classList.remove('open');
                 isOpen = false;
                 this.maxSizeBtn.setAttribute('aria-expanded', false);
             }
