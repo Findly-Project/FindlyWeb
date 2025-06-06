@@ -783,8 +783,8 @@ select.form-control {
 
 /* Loading indicator */
 .loading-indicator {
+  bottom: 50%;
   text-align: center;
-  padding: var(--space-32);
 }
 
 .loading-spinner {
@@ -1109,7 +1109,7 @@ select.form-control {
 }
 
 .max-size-btn {
-  padding: 3px 14px 3px 4px;
+  padding: 3px 6px 1px 4px;
   border: 2px solid var(--color-border);
   border-radius: 6px;
   background: var(--color-background);
@@ -1118,6 +1118,7 @@ select.form-control {
   cursor: pointer;
   text-align: left;
   transition: border-color 0.2s;
+  flex: none;
 }
 
 .max-size-btn:focus{
@@ -1125,14 +1126,14 @@ select.form-control {
 }
 
 .max-size-btn .arrow {
-  position: absolute;
+  position: relative;
   pointer-events: none;
 }
 
 .max-size-list {
   position: absolute;
   top: 65%;
-    right: 15%;
+    right: 13%;
   z-index: 10;
   background: var(--color-background);
   border: 1.5px solid var(--color-border);
@@ -1154,7 +1155,6 @@ select.form-control {
   max-height: 180px; /* подберите под свой список */
   opacity: 1;
   pointer-events: auto;
-    right: 15%;
 }
 
 .max-size-option {

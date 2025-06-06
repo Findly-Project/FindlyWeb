@@ -1,6 +1,6 @@
 class FindlyWeb {
     constructor() {
-        this.apiBaseUrl = 'http://127.0.0.1:8000';
+        this.apiBaseUrl = 'http://192.168.196.105:8000';
         this.searchEndpoint = '/api/search';
         this.marketplaces = ['MMG', 'Onliner', 'Kufar', '21vek'];
         this.currentQuery = '';
