@@ -7,21 +7,23 @@ class FindlyWeb {
         this.currentMarketplace = 'MMG';
         this.searchResults = {};
 
-        this.maxSizeSelect = document.getElementById('max-size-select');
-        this.maxSize = 10;
+        // Кастомный maxSize dropdown
+        this.maxSize = 20; // дефолт
+        this.maxSizeOptions = [10, 20, 30, 40];
 
         this.filters = {
             onlyNew: false,
             nameFilter: false,
             priceFilter: false,
             excludeWords: []
-        }
+        };
 
         this.initElements();
         this.initEvents();
         this.restoreFiltersFromUrl();
         this.bindEvents();
         this.renderExcludeWords();
+        this.initMaxSizeDropdown();
     }
 
     initElements() {
@@ -58,6 +60,12 @@ class FindlyWeb {
         this.excludeWordInput = document.getElementById('exclude-word-input');
         this.addExcludeWordBtn = document.getElementById('add-exclude-word');
         this.excludeWordsList = document.getElementById('exclude-words-list');
+
+        // Кастомный maxSize dropdown
+        this.maxSizeDropdown = document.getElementById('max-size-dropdown');
+        this.maxSizeBtn = document.getElementById('max-size-btn');
+        this.maxSizeList = document.getElementById('max-size-list');
+        this.maxSizeOptionEls = this.maxSizeList ? this.maxSizeList.querySelectorAll('.max-size-option') : [];
     }
 
     initEvents() {
@@ -92,7 +100,7 @@ class FindlyWeb {
             });
         }
 
-        // Пример: обработка поиска
+        // Обработка поиска
         if (this.homeSearchForm) {
             this.homeSearchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -113,9 +121,55 @@ class FindlyWeb {
                 }
             });
         }
-        this.maxSizeSelect.addEventListener('change', (e) => {
-            this.maxSize = parseInt(e.target.value, 10);
-            this.updateUrlParams();
+    }
+
+    initMaxSizeDropdown() {
+        if (!this.maxSizeBtn || !this.maxSizeList) return;
+
+        // Отобразить текущее значение
+        this.maxSizeBtn.childNodes[0].nodeValue = this.maxSize + ' ';
+
+        let isOpen = false;
+
+        this.maxSizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isOpen = !isOpen;
+            this.maxSizeList.hidden = !isOpen;
+            this.maxSizeBtn.setAttribute('aria-expanded', isOpen);
+            if (isOpen) this.maxSizeList.focus();
+        });
+
+        this.maxSizeOptionEls.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const value = parseInt(option.dataset.value, 10);
+                this.maxSize = value;
+                this.maxSizeBtn.childNodes[0].nodeValue = value + ' ';
+                this.updateUrlParams();
+                this.maxSizeList.hidden = true;
+                isOpen = false;
+                this.maxSizeBtn.setAttribute('aria-expanded', false);
+            });
+        });
+
+        // Закрытие при клике вне меню
+        document.addEventListener('click', (e) => {
+            if (isOpen && !this.maxSizeDropdown.contains(e.target)) {
+                this.maxSizeList.hidden = true;
+                isOpen = false;
+                this.maxSizeBtn.setAttribute('aria-expanded', false);
+            }
+        });
+
+        // Клавиатурная навигация (по желанию)
+        this.maxSizeBtn.addEventListener('keydown', (e) => {
+            if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !isOpen) {
+                e.preventDefault();
+                this.maxSizeList.hidden = false;
+                isOpen = true;
+                this.maxSizeBtn.setAttribute('aria-expanded', true);
+                this.maxSizeList.focus();
+            }
         });
     }
 
@@ -134,12 +188,12 @@ class FindlyWeb {
         }
 
         const ms = parseInt(params.get('ms'), 10);
-        if ([10, 20, 30, 40].includes(ms)) {
+        if (this.maxSizeOptions.includes(ms)) {
             this.maxSize = ms;
-            this.maxSizeSelect.value = ms;
+            if (this.maxSizeBtn) this.maxSizeBtn.childNodes[0].nodeValue = ms + ' ';
         } else {
-            this.maxSize = 10;
-            this.maxSizeSelect.value = 10;
+            this.maxSize = 20;
+            if (this.maxSizeBtn) this.maxSizeBtn.childNodes[0].nodeValue = '20 ';
         }
 
         // Синхронизировать чекбоксы
@@ -412,7 +466,6 @@ class FindlyWeb {
     renderMarketplaceProducts(marketplace, products) {
         const container = document.getElementById(`products-${marketplace}`);
         if (!container) return;
-
         container.innerHTML = '';
 
         products.forEach(product => {
@@ -538,7 +591,7 @@ class FindlyWeb {
     const params = new URLSearchParams(window.location.search);
 
     // Укажите здесь дефолтные значения (например, on=off, nf=off, pf=off)
-    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: '30' };
+    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: '20' };
     let needRedirect = false;
 
     for (const key in defaults) {
