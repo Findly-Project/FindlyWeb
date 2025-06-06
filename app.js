@@ -123,6 +123,23 @@ class FindlyWeb {
         }
     }
 
+    displaySearchTags() {
+        const tags = [];
+        if (this.filters.onlyNew) tags.push('Только новые');
+        if (this.filters.priceFilter) tags.push('Фильтр по цене');
+        if (this.filters.nameFilter) tags.push('Фильтр по названию');
+        // Можно добавить другие параметры, если появятся
+
+        const tagsContainer = document.getElementById('search-tags');
+        tagsContainer.innerHTML = '';
+        tags.forEach(tag => {
+            const tagEl = document.createElement('span');
+            tagEl.className = 'search-tag';
+            tagEl.textContent = tag;
+            tagsContainer.appendChild(tagEl);
+        });
+    }
+
     initMaxSizeDropdown() {
         if (!this.maxSizeBtn || !this.maxSizeList) return;
 
@@ -269,6 +286,8 @@ class FindlyWeb {
             this.handleSearch(this.homeSearchInput.value.trim());
             const searchTime = document.getElementById("search-time")
             searchTime.classList.add("hidden")
+            const searchTags = document.getElementById("search-tags")
+            searchTags.classList.add("hidden")
         });
 
         // Обработка поиска со страницы результатов
@@ -277,6 +296,8 @@ class FindlyWeb {
             this.handleSearch(this.resultsSearchInput.value.trim());
             const searchTime = document.getElementById("search-time")
             searchTime.classList.add("hidden")
+            const searchTags = document.getElementById("search-tags")
+            searchTags.classList.add("hidden")
         });
 
         // Переключение вкладок маркетплейсов
@@ -330,8 +351,11 @@ class FindlyWeb {
             const searchDuration = endTime - startTime;
 
             this.displaySearchTime(searchDuration);
+            this.displaySearchTags();
             const searchTime = document.getElementById("search-time")
             searchTime.classList.remove("hidden")
+            const searchTags = document.getElementById("search-tags")
+            searchTags.classList.remove("hidden")
             this.displayResults(results);
             console.log('Search results:', results);
             this.searchResults = results;

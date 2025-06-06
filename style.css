@@ -1226,6 +1226,29 @@ select.form-control {
   align-items: flex-start;
 }
 
+.results-header-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.search-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-tag {
+  background: #eef3fa;
+  color: #2064b0;
+  border-radius: 12px;
+  padding: 3px 12px;
+  font-size: 0.97em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+
 
 
 
