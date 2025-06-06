@@ -951,7 +951,10 @@ select.form-control {
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .search-time {
+  .search-tags{
+    position: fixed;
+  }
+  .search-time{
     display: none;
   }
   .home-container {
@@ -976,11 +979,16 @@ select.form-control {
   .results-search-container {
     flex-direction: column;
     gap: var(--space-12);
-    align-items: stretch;
+    align-items: center;
+  }
+
+  .results-search-form{
+    display: none;
   }
   
   .results-logo {
     text-align: center;
+    font-size: var(--font-size-4xl);
   }
   
   .products-grid {
@@ -1236,12 +1244,14 @@ select.form-control {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  justify-content: center;
 }
 
 .search-tag {
-  background: #eef3fa;
-  color: #2064b0;
+  background: var(--color-background);
+  color: var(--color-primary);
   border-radius: 12px;
+  border: var(--color-border) solid 1px;
   padding: 3px 12px;
   font-size: 0.97em;
   font-weight: 500;
