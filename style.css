@@ -103,6 +103,51 @@
   --container-xl: 1280px;
 }
 
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  fill: currentColor;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.sun {
+  color: #fff;
+}
+
+.moon {
+  color: #000;
+}
+
+[data-theme="dark"] .sun {
+  opacity: 1;
+}
+
+[data-theme="dark"] .moon {
+  opacity: 0;
+}
+
+
 /* Dark mode colors */
 @media (prefers-color-scheme: dark) {
   :root {
@@ -148,7 +193,7 @@
 }
 
 /* Data attribute for manual theme switching */
-[data-color-scheme="dark"] {
+[data-theme="dark"] {
   --color-background: rgba(31, 33, 33, 1);
   --color-surface: rgba(38, 40, 40, 1);
   --color-text: rgba(245, 245, 245, 1);
@@ -188,7 +233,7 @@
   --color-info-rgb: 167, 169, 169;
 }
 
-[data-color-scheme="light"] {
+[data-theme="light"] {
   --color-background: rgba(252, 252, 249, 1);
   --color-surface: rgba(255, 255, 253, 1);
   --color-text: rgba(19, 52, 59, 1);
@@ -1114,7 +1159,7 @@ select.form-control {
   border-radius: 6px;
   background: var(--color-background);
   font-size: 1em;
-  color: white;
+  color: var(--color-text);
   cursor: pointer;
   text-align: left;
   transition: border-color 0.2s;
