@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindlyWeb - Поиск товаров</title>
+    <title>FindlyWeb - Products search</title>
     <link rel="stylesheet" href="style.css">
     <!-- Font Awesome для иконки настроек -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -12,18 +12,18 @@
     <!-- Главная страница -->
     <div id="home-page" class="home-page">
         <div class="home-container">
-            <h1 class="logo">FindlyWeb</h1>
+            <h1 class="logo bounce" id="logo">FindlyWeb</h1>
             <div class="search-container">
                 <form id="search-form" class="search-form">
                     <input
                         type="text"
                         id="search-input"
                         class="search-input form-control"
-                        placeholder="Введите название товара для поиска"
+                        placeholder="Enter query..."
                         autocomplete="off"
                     >
                     <button type="submit" class="search-button btn btn--primary" id="main-search-button">
-                        Найти
+                        search
                     </button>
                 </form>
             </div>
@@ -42,11 +42,11 @@
                             type="text"
                             id="results-search-input"
                             class="search-input form-control"
-                            placeholder="Введите название товара для поиска"
+                            placeholder="Enter query..."
                             autocomplete="off"
                         >
                         <button type="submit" class="search-button btn btn--primary btn--sm">
-                            Найти
+                            search
                         </button>
                     </form>
                     <div id="search-tags" class="search-tags"></div>
@@ -61,13 +61,13 @@
                 <!-- Индикатор загрузки -->
                 <div id="loading-indicator" class="loading-indicator hidden">
                     <div class="loading-spinner"></div>
-                    <p>Поиск товаров...</p>
+                    <p>Products search...</p>
                 </div>
 
                 <!-- Сообщения об ошибках -->
                 <div id="error-message" class="error-message hidden">
                     <div class="status status--error">
-                        <span id="error-text">Ошибка при поиске товаров</span>
+                          <span id="error-text">Error while searching<span>
                     </div>
                 </div>
 
@@ -109,7 +109,7 @@
                 <!-- Сообщение "нет результатов" -->
                 <div id="no-results" class="no-results hidden">
                     <div class="status status--info">
-                        Товары не найдены
+                        Products not found
                     </div>
                 </div>
             </div>
@@ -148,21 +148,21 @@
     </button>
     <div id="settings-menu" class="settings-menu hidden">
         <div class="settings-section">
-            <h4>Параметры поиска</h4>
+            <h4>Search params</h4>
             <label>
                 <input type="checkbox" class="filter-checkbox" data-filter="onlyNew">
-                Только новые товары
+                Only new products
             </label>
             <label>
                 <input type="checkbox" class="filter-checkbox" data-filter="nameFilter">
-                Фильтр по имени
+                Filter by name
             </label>
             <label>
                 <input type="checkbox" class="filter-checkbox" data-filter="priceFilter">
-                Фильтр по цене
+                Filter by price
             </label>
             <div class="custom-select" id="max-size-dropdown">
-              <label for="max-size-btn">Количество товаров:</label>
+              <label for="max-size-btn">Size of products:</label>
               <button type="button" id="max-size-btn" class="max-size-btn" aria-haspopup="listbox" aria-expanded="false">
                 20
                 <span class="arrow">&#9662;</span>
@@ -174,10 +174,10 @@
                 <li class="max-size-option" data-value="40" role="option">40</li>
               </ul>
             </div>
-            <label>Исключить слова:</label>
+            <label>Exclude words:</label>
           <div class="exclude-words-ui">
-            <input type="text" id="exclude-word-input" placeholder="Введите слово" />
-            <button type="button" id="add-exclude-word">Добавить</button>
+            <input type="text" id="exclude-word-input" placeholder="Enter word" />
+            <button type="button" id="add-exclude-word">add</button>
           </div>
           <div id="exclude-words-list" class="exclude-words-list"></div>
         </div>

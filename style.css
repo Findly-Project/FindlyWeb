@@ -830,7 +830,7 @@ select.form-control {
 
 /* Loading indicator */
 .loading-indicator {
-  bottom: 50%;
+  margin-top: 20%;
   text-align: center;
 }
 
@@ -920,6 +920,26 @@ select.form-control {
   display: none;
 }
 
+.letter {
+    display: inline-block;
+    animation: bounce 1.5s infinite;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-12px);
+    }
+    75% {
+        transform: translateY(-12px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
 .marketplace-results.active {
   display: block;
 }
@@ -998,6 +1018,10 @@ select.form-control {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .max-size-list{
+    top: 24vh !important;
+    right: 24% !important;
+  }
   .search-tags{
     position: fixed;
   }
@@ -1178,8 +1202,8 @@ select.form-control {
 
 .max-size-list {
   position: absolute;
-  top: 65%;
-    right: 13%;
+  top: 23vh;
+    right: 23%;
   z-index: 10;
   background: var(--color-background);
   border: 1.5px solid var(--color-border);
@@ -1248,7 +1272,7 @@ select.form-control {
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
   color: white;
-  width: 120px;
+  width: 130px;
 }
 
 #exclude-word-input:focus {

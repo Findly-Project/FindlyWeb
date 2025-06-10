@@ -1,6 +1,6 @@
 class FindlyWeb {
     constructor() {
-        this.apiBaseUrl = 'http://127.0.0.1:8000';
+        this.apiBaseUrl = 'http://192.168.196.105:8000';
         this.searchEndpoint = '/api/search';
         this.marketplaces = ['MMG', 'Onliner', 'Kufar', '21vek'];
         this.currentQuery = '';
@@ -24,6 +24,7 @@ class FindlyWeb {
         this.bindEvents();
         this.renderExcludeWords();
         this.initMaxSizeDropdown();
+        this.fadeTextIn()
     }
 
     initElements() {
@@ -66,6 +67,28 @@ class FindlyWeb {
         this.maxSizeBtn = document.getElementById('max-size-btn');
         this.maxSizeList = document.getElementById('max-size-list');
         this.maxSizeOptionEls = this.maxSizeList ? this.maxSizeList.querySelectorAll('.max-size-option') : [];
+    }
+
+    fadeTextIn() {
+        const element = document.getElementById('home-page');
+        const paragraphs = element.getElementsByTagName('h1');
+        for (let i = 0; i < paragraphs.length; i++) {
+            const paragraph = paragraphs[i];
+            const text = paragraph.innerText.trim();
+
+            paragraph.innerHTML = '';
+
+            for (let j = 0; j < text.length; j++) {
+                const span = document.createElement('span');
+                span.innerText = text.charAt(j);
+                span.classList.add('letter');
+                paragraph.appendChild(span);
+            }
+            const letters = document.querySelectorAll('.letter');
+              letters.forEach((letter, index) => {
+                letter.style.animationDelay = (index * 0.1) + 's';
+              });
+        }
     }
 
     initEvents() {
@@ -364,7 +387,7 @@ class FindlyWeb {
             console.error('Search error:', error);
 
             // Определяем тип ошибки для более точного сообщения
-            let errorMessage = 'Ошибка при поиске товаров';
+            let errorMessage = 'Error while searching';
 
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 errorMessage = 'Не удается подключиться к серверу. Убедитесь, что API запущен на 127.0.0.1:8000';
