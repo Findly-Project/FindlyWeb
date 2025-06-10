@@ -765,7 +765,8 @@ select.form-control {
 .search-button {
   padding: var(--space-12) var(--space-24);
   border-radius: var(--radius-full);
-  font-weight: var(--font-weight-medium);
+  font-weight: bolder;
+  font-size: small;
   white-space: nowrap;
 }
 
@@ -929,11 +930,17 @@ select.form-control {
     0% {
         transform: translateY(0);
     }
-    25% {
-        transform: translateY(-12px);
+    20% {
+      transform: translateY(10px);
     }
-    75% {
-        transform: translateY(-12px);
+    40% {
+      transform: translateY(10px);
+    }
+    60% {
+      transform: translateY(10px);
+    }
+    80% {
+      transform: translateY(10px);
     }
     100% {
         transform: translateY(0);
@@ -992,6 +999,10 @@ select.form-control {
   padding: var(--space-16);
 }
 
+#main-search-button {
+    font-weight: bolder;
+  }
+
 .product-title {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-medium);
@@ -1040,11 +1051,12 @@ select.form-control {
     flex-direction: column;
     gap: var(--space-8);
     padding: var(--space-12);
-    border-radius: var(--radius-lg);
+    border-radius: 40px;
   }
 
   #main-search-button {
     width: 100%;
+    font-weight: bolder;
   }
   
   .results-search-container {
@@ -1283,7 +1295,7 @@ select.form-control {
 /* Стилизация кнопки "Добавить" */
 #add-exclude-word {
     border-radius: var(--radius-full);
-    font-weight: var(--font-weight-medium);
+    font-weight: bolder;
     white-space: nowrap;
     background: var(--color-primary);
     color: var(--color-btn-primary-text);
