@@ -1,188 +1,173 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindlyWeb - Products search</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome для иконки настроек -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>FindlyWeb - Products search</title>
+  <link href="style.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <!-- Главная страница -->
-    <div id="home-page" class="home-page">
-        <div class="home-container">
-            <h1 class="logo bounce" id="logo">FindlyWeb</h1>
-            <div class="search-container">
-                <form id="search-form" class="search-form">
-                    <input
-                        type="text"
-                        id="search-input"
-                        class="search-input form-control"
-                        placeholder="Enter query..."
-                        autocomplete="off"
-                    >
-                    <button type="submit" class="search-button btn btn--primary" id="main-search-button">
-                        search
-                    </button>
-                </form>
-            </div>
+<div class="home-page" id="home-page">
+  <div class="home-container">
+    <h1 class="logo bounce" id="logo">FindlyWeb</h1>
+    <div class="search-container">
+      <form class="search-form" id="search-form">
+        <input
+          autocomplete="off"
+          class="search-input form-control"
+          id="search-input"
+          placeholder="Enter query..."
+          type="text"
+        >
+        <button class="search-button btn btn--primary" id="main-search-button" type="submit">
+          search
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="results-page hidden" id="results-page">
+  <header class="results-header" id="results-header">
+    <div class="container">
+      <div class="results-search-container">
+        <h1 class="results-logo">FindlyWeb</h1>
+        <form class="results-search-form" id="results-search-form">
+          <input
+            autocomplete="off"
+            class="search-input form-control"
+            id="results-search-input"
+            placeholder="Enter query..."
+            type="text"
+          >
+          <button class="search-button btn btn--primary btn--sm" id="second-search-button" type="submit">
+            search
+          </button>
+        </form>
+        <div class="search-tags" id="search-tags"></div>
+        <div class="search-time" id="search-time"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="results-main">
+    <div class="container">
+      <div class="loading-indicator hidden" id="loading-indicator">
+        <div class="loading-spinner"></div>
+        <p>Products search...</p>
+      </div>
+
+      <div class="error-message hidden" id="error-message">
+        <div class="status status--error">
+          <span id="error-text">Error while searching</span>
         </div>
+      </div>
+
+      <div class="marketplace-tabs hidden" id="marketplace-tabs">
+        <div class="tabs-container">
+          <button class="tab-button" data-marketplace="MMG">
+            MMG <span class="tab-count" id="count-MMG">0</span>
+          </button>
+          <button class="tab-button" data-marketplace="Onliner">
+            Onliner <span class="tab-count" id="count-Onliner">0</span>
+          </button>
+          <button class="tab-button" data-marketplace="Kufar">
+            Kufar <span class="tab-count" id="count-Kufar">0</span>
+          </button>
+          <button class="tab-button" data-marketplace="21vek">
+            21vek <span class="tab-count" id="count-21vek">0</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="search-results hidden" id="search-results">
+        <div class="marketplace-results active" id="results-MMG">
+          <div class="products-grid" id="products-MMG"></div>
+        </div>
+        <div class="marketplace-results" id="results-Onliner">
+          <div class="products-grid" id="products-Onliner"></div>
+        </div>
+        <div class="marketplace-results" id="results-Kufar">
+          <div class="products-grid" id="products-Kufar"></div>
+        </div>
+        <div class="marketplace-results" id="results-21vek">
+          <div class="products-grid" id="products-21vek"></div>
+        </div>
+      </div>
+
+      <div class="no-results hidden" id="no-results">
+        <div class="status status--info">
+          Products not found
+        </div>
+      </div>
     </div>
+  </main>
+</div>
 
-    <!-- Страница результатов -->
-    <div id="results-page" class="results-page hidden">
-        <!-- Поисковая строка вверху -->
-        <header id="results-header" class="results-header">
-            <div class="container">
-                <div class="results-search-container">
-                    <h1 class="results-logo">FindlyWeb</h1>
-                    <form id="results-search-form" class="results-search-form">
-                        <input
-                            type="text"
-                            id="results-search-input"
-                            class="search-input form-control"
-                            placeholder="Enter query..."
-                            autocomplete="off"
-                        >
-                        <button type="submit" class="search-button btn btn--primary btn--sm" id="second-search-button">
-                            search
-                        </button>
-                    </form>
-                    <div id="search-tags" class="search-tags"></div>
-                    <div class="search-time" id="search-time"></div>
-                </div>
-            </div>
-        </header>
-
-        <!-- Основной контент -->
-        <main class="results-main">
-            <div class="container">
-                <!-- Индикатор загрузки -->
-                <div id="loading-indicator" class="loading-indicator hidden">
-                    <div class="loading-spinner"></div>
-                    <p>Products search...</p>
-                </div>
-
-                <!-- Сообщения об ошибках -->
-                <div id="error-message" class="error-message hidden">
-                    <div class="status status--error">
-                          <span id="error-text">Error while searching<span>
-                    </div>
-                </div>
-
-                <!-- Вкладки маркетплейсов -->
-                <div id="marketplace-tabs" class="marketplace-tabs hidden">
-                    <div class="tabs-container">
-                        <button class="tab-button" data-marketplace="MMG">
-                          MMG <span id="count-MMG" class="tab-count">0</span>
-                        </button>
-                        <button class="tab-button" data-marketplace="Onliner">
-                          Onliner <span class="tab-count" id="count-Onliner">0</span>
-                        </button>
-                        <button class="tab-button" data-marketplace="Kufar">
-                            Kufar <span class="tab-count" id="count-Kufar">0</span>
-                        </button>
-                        <button class="tab-button" data-marketplace="21vek">
-                            21vek <span class="tab-count" id="count-21vek">0</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Результаты поиска -->
-                <div id="search-results" class="search-results hidden">
-                    <!-- Контейнеры для каждого маркетплейса -->
-                    <div id="results-MMG" class="marketplace-results active">
-                        <div class="products-grid" id="products-MMG"></div>
-                    </div>
-                    <div id="results-Onliner" class="marketplace-results">
-                        <div class="products-grid" id="products-Onliner"></div>
-                    </div>
-                    <div id="results-Kufar" class="marketplace-results">
-                        <div class="products-grid" id="products-Kufar"></div>
-                    </div>
-                    <div id="results-21vek" class="marketplace-results">
-                        <div class="products-grid" id="products-21vek"></div>
-                    </div>
-                </div>
-
-                <!-- Сообщение "нет результатов" -->
-                <div id="no-results" class="no-results hidden">
-                    <div class="status status--info">
-                        Products not found
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <button id="theme-toggle" class="theme-toggle" aria-label="Переключить тему">
-    <symbol id="svg-sun" viewBox="0 0 24 24">
+<button aria-label="Переключить тему" class="theme-toggle" id="theme-toggle">
+  <symbol id="svg-sun" viewBox="0 0 24 24">
     <title>Light mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon sun">
+    <svg class="icon sun" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+         stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12" cy="12" r="5"></circle>
-      <line x1="12" y1="1" x2="12" y2="3"></line>
-      <line x1="12" y1="21" x2="12" y2="23"></line>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-      <line x1="1" y1="12" x2="3" y2="12"></line>
-      <line x1="21" y1="12" x2="23" y2="12"></line>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+      <line x1="12" x2="12" y1="1" y2="3"></line>
+      <line x1="12" x2="12" y1="21" y2="23"></line>
+      <line x1="4.22" x2="5.64" y1="4.22" y2="5.64"></line>
+      <line x1="18.36" x2="19.78" y1="18.36" y2="19.78"></line>
+      <line x1="1" x2="3" y1="12" y2="12"></line>
+      <line x1="21" x2="23" y1="12" y2="12"></line>
+      <line x1="4.22" x2="5.64" y1="19.78" y2="18.36"></line>
+      <line x1="18.36" x2="19.78" y1="5.64" y2="4.22"></line>
     </svg>
   </symbol>
 
-    <symbol id="svg-moon" viewBox="0 0 24 24">
+  <symbol id="svg-moon" viewBox="0 0 24 24">
     <title>Dark mode</title>
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon moon">
-      <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+    <svg class="icon moon" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+         stroke-width="1" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0 0h24v24H0z" fill="none" stroke="none"></path>
       <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z"></path>
     </svg>
   </symbol>
-  </button>
+</button>
 
-
-    <!-- Кнопка и меню настроек -->
-    <button id="settings-button" class="settings-button" title="Настройки поиска">
-        <i class="fas fa-cog"></i>
-    </button>
-    <div id="settings-menu" class="settings-menu hidden">
-        <div class="settings-section">
-            <h4>Search params</h4>
-            <label>
-                <input type="checkbox" class="filter-checkbox" data-filter="onlyNew">
-                Only new products
-            </label>
-            <label>
-                <input type="checkbox" class="filter-checkbox" data-filter="nameFilter">
-                Filter by name
-            </label>
-            <label>
-                <input type="checkbox" class="filter-checkbox" data-filter="priceFilter">
-                Filter by price
-            </label>
-            <div class="custom-select" id="max-size-dropdown">
-              <label for="max-size-btn">Size of products:</label>
-              <button type="button" id="max-size-btn" class="max-size-btn" aria-haspopup="listbox" aria-expanded="false">
-                20
-                <span class="arrow">&#9662;</span>
-              </button>
-              <ul class="max-size-list" id="max-size-list" tabindex="-1" role="listbox" aria-labelledby="max-size-btn">
-                <li class="max-size-option" data-value="10" role="option">10</li>
-                <li class="max-size-option" data-value="20" role="option">20</li>
-                <li class="max-size-option" data-value="30" role="option">30</li>
-                <li class="max-size-option" data-value="40" role="option">40</li>
-              </ul>
-            </div>
-            <label>Exclude words:</label>
-          <div class="exclude-words-ui">
-            <input type="text" id="exclude-word-input" placeholder="Enter word" />
-            <button type="button" id="add-exclude-word">add</button>
-          </div>
-          <div id="exclude-words-list" class="exclude-words-list"></div>
-        </div>
+<button class="settings-button" id="settings-button" title="Настройки поиска">
+  <i class="fas fa-cog"></i>
+</button>
+<div class="settings-menu hidden" id="settings-menu">
+  <div class="settings-section">
+    <h4>Search params</h4>
+    <label>
+      <input class="filter-checkbox" data-filter="onlyNew" type="checkbox">Only new products</label>
+    <label>
+      <input class="filter-checkbox" data-filter="nameFilter" type="checkbox">Filter by name</label>
+    <label>
+      <input class="filter-checkbox" data-filter="priceFilter" type="checkbox">
+      Filter by price
+    </label>
+    <div class="custom-select" id="max-size-dropdown">
+      <label for="max-size-btn">Size of products:</label>
+      <button aria-expanded="false" aria-haspopup="listbox" class="max-size-btn" id="max-size-btn" type="button">
+        20
+        <span class="arrow">&#9662;</span>
+      </button>
+      <ul aria-labelledby="max-size-btn" class="max-size-list" id="max-size-list" role="listbox" tabindex="-1">
+        <li class="max-size-option" data-value="10" role="option">10</li>
+        <li class="max-size-option" data-value="20" role="option">20</li>
+        <li class="max-size-option" data-value="30" role="option">30</li>
+        <li class="max-size-option" data-value="40" role="option">40</li>
+      </ul>
     </div>
+    <label>Exclude words:</label>
+    <div class="exclude-words-ui">
+      <input id="exclude-word-input" placeholder="Enter word" type="text" />
+      <button id="add-exclude-word" type="button">add</button>
+    </div>
+    <div class="exclude-words-list" id="exclude-words-list"></div>
+  </div>
+</div>
 
-    <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>

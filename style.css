@@ -454,7 +454,7 @@ pre code {
 }
 
 textarea.form-control {
-    font-family: var(--font-family-base);
+    font-family: var(--font-family-base), serif;
     font-size: var(--font-size-base);
 }
 
