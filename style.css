@@ -923,7 +923,7 @@ select.form-control {
 
 .letter {
     display: inline-block;
-    animation: bounce 1.5s infinite;
+    animation: bounce 3s infinite;
 }
 
 @keyframes bounce {

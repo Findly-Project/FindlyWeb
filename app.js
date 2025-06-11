@@ -128,7 +128,11 @@ class FindlyWeb {
             this.homeSearchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const query = this.homeSearchInput.value.trim();
+                const searchButton = document.getElementById('main-search-button');
+                const secondSearchButton = document.getElementById('second-search-button')
                 if (query) {
+                    searchButton.disabled = true;
+                    secondSearchButton.disabled = true;
                     this.currentQuery = query;
                     this.handleSearch(query);
                 }
@@ -138,9 +142,14 @@ class FindlyWeb {
             this.resultsSearchForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const query = this.resultsSearchInput.value.trim();
+                const searchButton = document.getElementById('second-search-button');
+                const secondSearchButton = document.getElementById('main-search-button')
                 if (query) {
+                    searchButton.disabled = true;
+                    secondSearchButton.disabled = true;
                     this.currentQuery = query;
                     this.handleSearch(query);
+                    e.stopPropagation()
                 }
             });
         }
@@ -401,6 +410,12 @@ class FindlyWeb {
 
             this.showError(errorMessage);
         } finally {
+            const mainSearchButton = document.getElementById('main-search-button');
+            const secondSearchButton = document.getElementById('second-search-button');
+
+            mainSearchButton.disabled = false;
+            secondSearchButton.disabled = false;
+
             this.hideLoading();
         }
     }
