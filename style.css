@@ -703,7 +703,7 @@ select.form-control {
 
 @font-face {
     font-family: 'FKGroteskNeue';
-    src: url('https://www.perplexity.ai/fonts/FKGroteskNeue.woff2') format('woff2');
+    src: url('./FKGroteskNeue.woff2') format('woff2');
 }
 
 .home-page {
