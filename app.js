@@ -5,12 +5,14 @@ class FindlyWeb {
   static #MAX_SIZE_OPTIONS = [10, 20, 30, 40];
   static #DEFAULT_MAX_SIZE = 20;
   static #SEARCH_TIMEOUT = 20000;
+  static #MAX_EXCLUDE_WORDS = 5;
 
   #apiBaseUrl = FindlyWeb.#API_BASE_URL;
   #searchEndpoint = FindlyWeb.#SEARCH_ENDPOINT;
   #marketplaces = FindlyWeb.#MARKETPLACES;
   #maxSizeOptions = FindlyWeb.#MAX_SIZE_OPTIONS;
 
+  #toastTimeoutId = null;
   #currentQuery = '';
   #currentMarketplace = 'MMG';
   #searchResults = {};
@@ -35,7 +37,7 @@ class FindlyWeb {
 
   #initElements() {
     const ids = [
-      'settings-button', 'settings-menu', 'home-page', 'results-page',
+      'settings-button', 'settings-menu', 'home-page', 'results-page', 'toast-notification',
       'search-form', 'search-input', 'results-search-form', 'results-search-input',
       'loading-indicator', 'error-message', 'error-text', 'marketplace-tabs',
       'search-results', 'no-results', 'exclude-word-input', 'add-exclude-word',
@@ -109,26 +111,27 @@ class FindlyWeb {
     event.preventDefault();
     const query = inputElement.value.trim();
 
+    if (!query){
+      this.#showToast('Query cannot be empty', 2000)
+      return
+    }
+
     if (this.#filters.nameFilter && this.#filters.excludeWords.length > 0) {
       const queryWords = query.toLowerCase().split(/\s+/);
       const excludeWordsLower = this.#filters.excludeWords.map(w => w.toLowerCase());
       const forbiddenWord = queryWords.find(qw => excludeWordsLower.includes(qw));
 
       if (forbiddenWord) {
-        this.#hideResults();
-        this.#showError(`The query cannot contain the exception word "${forbiddenWord}", because "Filter by name" is enabled.`);
-        this.#elements['results-page']?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.#showToast(`The query cannot contain the exception word "${forbiddenWord}", because "Filter by name" is enabled.`, 4000);
         return;
       }
     }
 
-    if (query) {
-      this.#elements['main-search-button'].disabled = true;
-      this.#elements['second-search-button'].disabled = true;
-      this.#elements['search-time']?.classList.add('hidden');
-      this.#elements['search-tags']?.classList.add('hidden');
-      this.performSearch(query);
-    }
+    this.#elements['main-search-button'].disabled = true;
+    this.#elements['second-search-button'].disabled = true;
+    this.#elements['search-time']?.classList.add('hidden');
+    this.#elements['search-tags']?.classList.add('hidden');
+    this.performSearch(query);
   }
 
   #animateTitle() {
@@ -222,6 +225,11 @@ class FindlyWeb {
   #addExcludeWord() {
     const input = this.#elements['exclude-word-input'];
     const word = input.value.trim();
+    if (this.#filters.excludeWords.length >= FindlyWeb.#MAX_EXCLUDE_WORDS) {
+      this.#showToast(`Exception-word limit reached`, 2000);
+      input.value = '';
+      return;
+    }
     if (word && !this.#filters.excludeWords.includes(word)) {
       this.#filters.excludeWords.push(word);
       this.#renderExcludeWords();
@@ -263,7 +271,6 @@ class FindlyWeb {
     this.#currentQuery = query;
 
     this.#showResultsPage();
-    // === ВОССТАНОВЛЕНА ПЛАВНАЯ ПРОКРУТКА ===
     this.#elements['results-page']?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     this.#showLoading();
@@ -443,6 +450,23 @@ class FindlyWeb {
     if (this.#elements['error-text']) this.#elements['error-text'].textContent = message;
     this.#elements['error-message']?.classList.remove('hidden');
   }
+  #showToast(message, timeout) {
+    const toast = this.#elements['toast-notification'];
+    if (!toast) return;
+
+    if (this.#toastTimeoutId) {
+      clearTimeout(this.#toastTimeoutId);
+    }
+
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    this.#toastTimeoutId = setTimeout(() => {
+      toast.classList.remove('show');
+      this.#toastTimeoutId = null;
+    }, timeout);
+  }
+
   #hideError() { this.#elements['error-message']?.classList.add('hidden'); }
   #showResultsContainer() {
     this.#elements['marketplace-tabs']?.classList.remove('hidden');
