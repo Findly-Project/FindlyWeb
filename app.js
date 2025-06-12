@@ -1,706 +1,478 @@
 class FindlyWeb {
-    constructor() {
-        this.apiBaseUrl = 'http://192.168.196.105:8000';
-        this.searchEndpoint = '/api/search';
-        this.marketplaces = ['MMG', 'Onliner', 'Kufar', '21vek'];
-        this.currentQuery = '';
-        this.currentMarketplace = 'MMG';
-        this.searchResults = {};
+  static #API_BASE_URL = 'http://192.168.196.105:8000';
+  static #SEARCH_ENDPOINT = '/api/search';
+  static #MARKETPLACES = ['MMG', 'Onliner', 'Kufar', '21vek'];
+  static #MAX_SIZE_OPTIONS = [10, 20, 30, 40];
+  static #DEFAULT_MAX_SIZE = 20;
+  static #SEARCH_TIMEOUT = 20000;
+
+  #apiBaseUrl = FindlyWeb.#API_BASE_URL;
+  #searchEndpoint = FindlyWeb.#SEARCH_ENDPOINT;
+  #marketplaces = FindlyWeb.#MARKETPLACES;
+  #maxSizeOptions = FindlyWeb.#MAX_SIZE_OPTIONS;
+
+  #currentQuery = '';
+  #currentMarketplace = 'MMG';
+  #searchResults = {};
+  #maxSize = FindlyWeb.#DEFAULT_MAX_SIZE;
+  #filters = {
+    onlyNew: false,
+    nameFilter: false,
+    priceFilter: false,
+    excludeWords: [],
+  };
+
+  #elements = {};
 
-        // Кастомный maxSize dropdown
-        this.maxSize = 20; // дефолт
-        this.maxSizeOptions = [10, 20, 30, 40];
-
-        this.filters = {
-            onlyNew: false,
-            nameFilter: false,
-            priceFilter: false,
-            excludeWords: []
-        };
-
-        this.initElements();
-        this.initEvents();
-        this.restoreFiltersFromUrl();
-        this.bindEvents();
-        this.renderExcludeWords();
-        this.initMaxSizeDropdown();
-        this.fadeTextIn()
-    }
-
-    initElements() {
-        // Настройки
-        this.settingsButton = document.getElementById('settings-button');
-        this.settingsMenu = document.getElementById('settings-menu');
-        this.filterCheckboxes = this.settingsMenu.querySelectorAll('.filter-checkbox');
-
-        // Поиск
-        this.homePage = document.getElementById('home-page');
-        this.resultsPage = document.getElementById('results-page');
-
-        // Поисковые формы и поля
-        this.homeSearchForm = document.getElementById('search-form');
-        this.homeSearchInput = document.getElementById('search-input');
-        this.resultsSearchForm = document.getElementById('results-search-form');
-        this.resultsSearchInput = document.getElementById('results-search-input');
-
-        // Элементы результатов
-        this.loadingIndicator = document.getElementById('loading-indicator');
-        this.errorMessage = document.getElementById('error-message');
-        this.errorText = document.getElementById('error-text');
-        this.marketplaceTabs = document.getElementById('marketplace-tabs');
-        this.searchResultsContainer = document.getElementById('search-results');
-        this.noResults = document.getElementById('no-results');
-
-        // Вкладки
-        this.tabButtons = document.querySelectorAll('.tab-button');
-
-        // Логотип для возврата на главную
-        this.resultsLogo = document.querySelector('.results-logo');
-
-        // Элементы для excludeWords
-        this.excludeWordInput = document.getElementById('exclude-word-input');
-        this.addExcludeWordBtn = document.getElementById('add-exclude-word');
-        this.excludeWordsList = document.getElementById('exclude-words-list');
-
-        // Кастомный maxSize dropdown
-        this.maxSizeDropdown = document.getElementById('max-size-dropdown');
-        this.maxSizeBtn = document.getElementById('max-size-btn');
-        this.maxSizeList = document.getElementById('max-size-list');
-        this.maxSizeOptionEls = this.maxSizeList ? this.maxSizeList.querySelectorAll('.max-size-option') : [];
-    }
-
-    fadeTextIn() {
-        const element = document.getElementById('home-page');
-        const paragraphs = element.getElementsByTagName('h1');
-        for (let i = 0; i < paragraphs.length; i++) {
-            const paragraph = paragraphs[i];
-            const text = paragraph.innerText.trim();
-
-            paragraph.innerHTML = '';
-
-            for (let j = 0; j < text.length; j++) {
-                const span = document.createElement('span');
-                span.innerText = text.charAt(j);
-                span.classList.add('letter');
-                paragraph.appendChild(span);
-            }
-            const letters = document.querySelectorAll('.letter');
-              letters.forEach((letter, index) => {
-                letter.style.animationDelay = (index * 0.12) + 's';
-              });
-        }
-    }
-
-    initEvents() {
-        // Открытие/закрытие меню
-        this.settingsButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.settingsMenu.classList.toggle('hidden');
-        });
-        // Клик вне меню - закрыть
-        document.addEventListener('click', (e) => {
-            if (!this.settingsMenu.contains(e.target) && e.target !== this.settingsButton) {
-                this.settingsMenu.classList.add('hidden');
-            }
-        });
-        // Чекбоксы фильтров
-        this.filterCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', (e) => {
-                const filter = e.target.dataset.filter;
-                this.filters[filter] = e.target.checked;
-                this.updateUrlParams();
-            });
-        });
-
-        // Обработка добавления исключаемого слова
-        if (this.addExcludeWordBtn && this.excludeWordInput) {
-            this.addExcludeWordBtn.addEventListener('click', () => this.addExcludeWord());
-            this.excludeWordInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    this.addExcludeWord();
-                }
-            });
-        }
-
-        // Обработка поиска
-        if (this.homeSearchForm) {
-            this.homeSearchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const query = this.homeSearchInput.value.trim();
-                const searchButton = document.getElementById('main-search-button');
-                const secondSearchButton = document.getElementById('second-search-button')
-                if (query) {
-                    searchButton.disabled = true;
-                    secondSearchButton.disabled = true;
-                    this.currentQuery = query;
-                    this.handleSearch(query);
-                }
-            });
-        }
-        if (this.resultsSearchForm) {
-            this.resultsSearchForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const query = this.resultsSearchInput.value.trim();
-                const searchButton = document.getElementById('second-search-button');
-                const secondSearchButton = document.getElementById('main-search-button')
-                if (query) {
-                    searchButton.disabled = true;
-                    secondSearchButton.disabled = true;
-                    this.currentQuery = query;
-                    this.handleSearch(query);
-                    e.stopPropagation()
-                }
-            });
-        }
-    }
-
-    displaySearchTags() {
-        const tags = [];
-        if (this.filters.onlyNew) tags.push('Только новые');
-        if (this.filters.priceFilter) tags.push('Фильтр по цене');
-        if (this.filters.nameFilter) tags.push('Фильтр по названию');
-        // Можно добавить другие параметры, если появятся
-
-        const tagsContainer = document.getElementById('search-tags');
-        tagsContainer.innerHTML = '';
-        tags.forEach(tag => {
-            const tagEl = document.createElement('span');
-            tagEl.className = 'search-tag';
-            tagEl.textContent = tag;
-            tagsContainer.appendChild(tagEl);
-        });
-    }
-
-    initMaxSizeDropdown() {
-        if (!this.maxSizeBtn || !this.maxSizeList) return;
-
-        // Отобразить текущее значение
-        this.maxSizeBtn.childNodes[0].nodeValue = this.maxSize + ' ';
-
-        let isOpen = false;
-
-        this.maxSizeBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            isOpen = !isOpen;
-            if (isOpen) {
-                this.maxSizeList.classList.add('open');
-                this.maxSizeBtn.setAttribute('aria-expanded', true);
-                this.maxSizeList.focus();
-            } else {
-                this.maxSizeList.classList.remove('open');
-                this.maxSizeBtn.setAttribute('aria-expanded', false);
-            }
-        });
-
-        this.maxSizeOptionEls.forEach(option => {
-            option.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const value = parseInt(option.dataset.value, 10);
-                this.maxSize = value;
-                this.maxSizeBtn.childNodes[0].nodeValue = value + ' ';
-                this.updateUrlParams();
-                this.maxSizeList.classList.remove('open');
-                isOpen = false;
-                this.maxSizeBtn.setAttribute('aria-expanded', false);
-            });
-        });
-
-        // Закрытие при клике вне меню
-        document.addEventListener('click', (e) => {
-            if (isOpen && !this.maxSizeDropdown.contains(e.target)) {
-                this.maxSizeList.classList.remove('open');
-                isOpen = false;
-                this.maxSizeBtn.setAttribute('aria-expanded', false);
-            }
-        });
-
-        // Клавиатурная навигация (по желанию)
-        this.maxSizeBtn.addEventListener('keydown', (e) => {
-            if ((e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') && !isOpen) {
-                e.preventDefault();
-                this.maxSizeList.hidden = false;
-                isOpen = true;
-                this.maxSizeBtn.setAttribute('aria-expanded', true);
-                this.maxSizeList.focus();
-            }
-        });
-    }
-
-    restoreFiltersFromUrl() {
-        const params = new URLSearchParams(window.location.search);
-        this.filters.onlyNew = params.get('on') === 'on';
-        this.filters.nameFilter = params.get('nf') === 'on';
-        this.filters.priceFilter = params.get('pf') === 'on';
-
-        // ew (exclude words)
-        const ew = params.get('ew');
-        if (ew) {
-            this.filters.excludeWords = ew.split('|').filter(Boolean);
-        } else {
-            this.filters.excludeWords = [];
-        }
-
-        const ms = parseInt(params.get('ms'), 10);
-        if (this.maxSizeOptions.includes(ms)) {
-            this.maxSize = ms;
-            if (this.maxSizeBtn) this.maxSizeBtn.childNodes[0].nodeValue = ms + ' ';
-        } else {
-            this.maxSize = 20;
-            if (this.maxSizeBtn) this.maxSizeBtn.childNodes[0].nodeValue = '20 ';
-        }
-
-        // Синхронизировать чекбоксы
-        this.filterCheckboxes.forEach(cb => {
-            cb.checked = this.filters[cb.dataset.filter];
-        });
-
-        this.renderExcludeWords();
-    }
-
-    updateUrlParams() {
-        const params = new URLSearchParams(window.location.search);
-        if (this.filters.onlyNew) params.set('on', 'on'); else params.set('on', 'off');
-        if (this.filters.nameFilter) params.set('nf', 'on'); else params.set('nf', 'off');
-        if (this.filters.priceFilter) params.set('pf', 'on'); else params.set('pf', 'off');
-        params.set('ms', this.maxSize);
-
-        // ew
-        if (this.filters.excludeWords.length > 0) {
-            params.set('ew', this.filters.excludeWords.join('|'));
-        } else {
-            params.delete('ew');
-        }
-
-        window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    }
-
-    addExcludeWord() {
-        const word = this.excludeWordInput.value.trim();
-        if (word && !this.filters.excludeWords.includes(word)) {
-            this.filters.excludeWords.push(word);
-            this.renderExcludeWords();
-            this.updateUrlParams();
-        }
-        this.excludeWordInput.value = '';
-    }
-
-    removeExcludeWord(word) {
-        this.filters.excludeWords = this.filters.excludeWords.filter(w => w !== word);
-        this.renderExcludeWords();
-        this.updateUrlParams();
-    }
-
-    renderExcludeWords() {
-        if (!this.excludeWordsList) return;
-        this.excludeWordsList.innerHTML = '';
-        this.filters.excludeWords.forEach(word => {
-            const chip = document.createElement('span');
-            chip.className = 'exclude-word-chip';
-            chip.textContent = word;
-            const btn = document.createElement('button');
-            btn.innerHTML = '&times;';
-            btn.title = 'Удалить';
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                this.removeExcludeWord(word);
-            });
-
-            chip.appendChild(btn);
-            this.excludeWordsList.appendChild(chip);
-        });
-    }
-
-    bindEvents() {
-        // Обработка поиска с главной страницы
-        this.homeSearchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleSearch(this.homeSearchInput.value.trim());
-            const searchTime = document.getElementById("search-time")
-            searchTime.classList.add("hidden")
-            const searchTags = document.getElementById("search-tags")
-            searchTags.classList.add("hidden")
-        });
-
-        // Обработка поиска со страницы результатов
-        this.resultsSearchForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleSearch(this.resultsSearchInput.value.trim());
-            const searchTime = document.getElementById("search-time")
-            searchTime.classList.add("hidden")
-            const searchTags = document.getElementById("search-tags")
-            searchTags.classList.add("hidden")
-        });
-
-        // Переключение вкладок маркетплейсов
-        this.tabButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const marketplace = button.dataset.marketplace;
-                this.switchMarketplace(marketplace);
-            });
-        });
-
-        // Возврат на главную по клику на логотип
-        this.resultsLogo.addEventListener('click', () => {
-            this.homePage.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        });
-    }
-
-    async handleSearch(query) {
-        if (!query) {
-            this.showError('Введите поисковый запрос');
-            return;
-        }
-
-        const startTime = performance.now();
-        console.log(`Начало поиска: ${startTime.toFixed(2)} мс`);
-
-        this.currentQuery = query;
-        this.showResultsPage();
-        setTimeout(() => {
-            const loadingIndicator = document.getElementById('loading-indicator');
-            if (loadingIndicator) {
-                loadingIndicator.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }, 100);
-        this.showLoading();
-        this.hideError();
-        this.hideResults();
-
-        // Обновляем поисковые поля
-        this.homeSearchInput.value = query;
-        this.resultsSearchInput.value = query;
-
-        try {
-            const results = await this.searchProducts(query);
-            const endTime = performance.now();
-            const searchDuration = endTime - startTime;
-
-            this.displaySearchTime(searchDuration);
-            this.displaySearchTags();
-            const searchTime = document.getElementById("search-time")
-            searchTime.classList.remove("hidden")
-            const searchTags = document.getElementById("search-tags")
-            searchTags.classList.remove("hidden")
-            this.displayResults(results);
-            console.log('Search results:', results);
-            this.searchResults = results;
-            this.displayResults(results);
-        } catch (error) {
-            console.error('Search error:', error);
-
-            // Определяем тип ошибки для более точного сообщения
-            let errorMessage = 'Error while searching';
-
-            if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                errorMessage = 'Не удается подключиться к серверу. Убедитесь, что API запущен на 127.0.0.1:8000';
-            } else if (error.message.includes('CORS')) {
-                errorMessage = 'Ошибка CORS. Проверьте настройки сервера';
-            } else if (error.message.includes('404')) {
-                errorMessage = 'API endpoint не найден';
-            } else if (error.message.includes('500')) {
-                errorMessage = 'Внутренняя ошибка сервера';
-            }
-
-            this.showError(errorMessage);
-        } finally {
-            const mainSearchButton = document.getElementById('main-search-button');
-            const secondSearchButton = document.getElementById('second-search-button');
-
-            mainSearchButton.disabled = false;
-            secondSearchButton.disabled = false;
-
-            this.hideLoading();
-        }
-    }
-
-    displaySearchTime(duration) {
-        const timeContainer = document.getElementById('search-time');
-        timeContainer.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
-    }
-
-    async searchProducts(query) {
-        const url = new URL(this.apiBaseUrl + this.searchEndpoint);
-        url.searchParams.set('q', query);
-        url.searchParams.set('ms', this.maxSize);
-        if (this.filters.onlyNew) {
-            url.searchParams.set('on', 'on');
-        } else {
-            url.searchParams.set('on', 'off');
-        }
-
-        if (this.filters.nameFilter) {
-            url.searchParams.set('nf', 'on');
-        } else {
-            url.searchParams.set('nf', 'off');
-        }
-
-        if (this.filters.priceFilter) {
-            url.searchParams.set('pf', 'on');
-        } else {
-            url.searchParams.set('pf', 'off');
-        }
-
-        if (this.filters.excludeWords && this.filters.excludeWords.length > 0) {
-            url.searchParams.set('ew', this.filters.excludeWords.join('|'));
-        }
-
-        console.log('Fetching from URL:', url);
-
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 20000); // 20 секунд таймаут
-
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                signal: controller.signal
-            });
-
-            clearTimeout(timeoutId);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            clearTimeout(timeoutId);
-            throw error;
-        }
-    }
-
-    displayResults(results) {
-        if (!results || !results.products_data) {
-            this.showError('Неверный формат ответа от сервера');
-            return;
-        }
-
-        const productsData = results.products_data;
-        let hasAnyResults = false;
-
-        // Обновляем счетчики во вкладках и отображаем товары
-        const marketplaceStatus = {};
-        this.marketplaces.forEach(mp => {
-            const count = (productsData[mp] || []).length;
-            marketplaceStatus[mp] = count > 0;
-        });
-
-        // Обновление интерфейса
-        this.marketplaces.forEach(marketplace => {
-            const products = productsData[marketplace] || [];
-            const count = products.length;
-            const tabElement = document.querySelector(`[data-marketplace="${marketplace}"]`);
-            const countElement = document.getElementById(`count-${marketplace}`);
-
-            if (count > 0) {
-                hasAnyResults = true;
-                tabElement.classList.remove('hidden');
-                countElement.textContent = count;
-                this.renderMarketplaceProducts(marketplace, products);
-            } else {
-                tabElement.classList.add('hidden');
-                countElement.textContent = '';
-            }
-        });
-
-        if (hasAnyResults) {
-            this.showResults();
-            setTimeout(() => {
-                const resultsHeader = document.getElementById('results-header')
-                resultsHeader.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }, 300);
-            const firstVisible = this.marketplaces.find(mp =>
-                marketplaceStatus[mp] && !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
-            );
-            this.switchMarketplace(firstVisible || 'MMG');
-        } else {
-            this.showNoResults();
-        }
-    }
-
-    renderMarketplaceProducts(marketplace, products) {
-        const container = document.getElementById(`products-${marketplace}`);
-        if (!container) return;
-        container.innerHTML = '';
-
-        products.forEach(product => {
-            const productCard = this.createProductCard(product);
-            container.appendChild(productCard);
-        });
-    }
-
-    createProductCard(product) {
-        const card = document.createElement('a');
-        card.className = 'product-card';
-        card.href = product.link || '#';
-        card.target = '_blank';
-        card.rel = 'noopener noreferrer';
-
-        const imageContainer = document.createElement('div');
-        imageContainer.className = 'product-image';
-
-        if (product.image && product.image.trim()) {
-            const img = document.createElement('img');
-            img.src = product.image;
-            img.alt = product.name || 'Товар';
-            img.onerror = () => {
-                img.style.display = 'none';
-                imageContainer.textContent = 'Изображение недоступно';
-            };
-            imageContainer.appendChild(img);
-        } else {
-            imageContainer.textContent = 'Изображение недоступно';
-        }
-
-        const productInfo = document.createElement('div');
-        productInfo.className = 'product-info';
-
-        const title = document.createElement('div');
-        title.className = 'product-title';
-        title.textContent = product.name || 'Название товара';
-
-        const price = document.createElement('div');
-        price.className = 'product-price';
-        price.textContent = product.price + ' BYN' || 'Цена не указана';
-
-        productInfo.appendChild(title);
-        productInfo.appendChild(price);
-
-        card.appendChild(imageContainer);
-        card.appendChild(productInfo);
-
-        return card;
-    }
-
-    switchMarketplace(marketplace) {
-        const visibleMarketplaces = this.marketplaces.filter(mp =>
-            !document.querySelector(`[data-marketplace="${mp}"]`).classList.contains('hidden')
-        );
-
-        if (!visibleMarketplaces.includes(marketplace)) {
-            marketplace = visibleMarketplaces[0] || 'MMG';
-        }
-        this.currentMarketplace = marketplace;
-
-        // Обновляем активную вкладку
-        this.tabButtons.forEach(button => {
-            if (button.dataset.marketplace === marketplace) {
-                button.classList.add('active');
-            } else {
-                button.classList.remove('active');
-            }
-        });
-
-        // Обновляем отображение результатов
-        const resultContainers = document.querySelectorAll('.marketplace-results');
-        resultContainers.forEach(container => {
-            if (container.id === `results-${marketplace}`) {
-                container.classList.add('active');
-            } else {
-                container.classList.remove('active');
-            }
-        });
-    }
-
-    showResultsPage() {
-        this.resultsPage.classList.remove('hidden');
-    }
-
-    showLoading() {
-        this.loadingIndicator.classList.remove('hidden');
-    }
-
-    hideLoading() {
-        this.loadingIndicator.classList.add('hidden');
-    }
-
-    showError(message) {
-        this.errorText.textContent = message;
-        this.errorMessage.classList.remove('hidden');
-    }
-
-    hideError() {
-        this.errorMessage.classList.add('hidden');
-    }
-
-    showResults() {
-        this.marketplaceTabs.classList.remove('hidden');
-        this.searchResultsContainer.classList.remove('hidden');
-        this.noResults.classList.add('hidden');
-    }
-
-    hideResults() {
-        this.marketplaceTabs.classList.add('hidden');
-        this.searchResultsContainer.classList.add('hidden');
-        this.noResults.classList.add('hidden');
-    }
-
-    showNoResults() {
-        this.marketplaceTabs.classList.add('hidden');
-        this.searchResultsContainer.classList.add('hidden');
-        this.noResults.classList.remove('hidden');
-    }
-}
-
-(function redirectToDefaultParams() {
-    const params = new URLSearchParams(window.location.search);
-
-    // Укажите здесь дефолтные значения (например, on=off, nf=off, pf=off)
-    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: '20' };
-    let needRedirect = false;
-
-    for (const key in defaults) {
-        if (!params.has(key)) {
-            params.set(key, defaults[key]);
-            needRedirect = true;
-        }
-    }
-
-    if (needRedirect) {
-        // Заменяем текущий URL (без добавления в историю)
-        window.location.replace(`${window.location.pathname}?${params.toString()}`);
-    }
-})();
-
-class ThemeSwitcher {
   constructor() {
-    this.toggleBtn = document.getElementById('theme-toggle');
-    this.initTheme();
-    this.bindEvents();
+    this.#initElements();
+    this.#applyDefaultUrlParams();
+    this.#restoreStateFromUrl();
+    this.#bindEvents();
+    this.#initMaxSizeDropdown();
+    this.#animateTitle();
   }
 
-  initTheme() {
+  #initElements() {
+    const ids = [
+      'settings-button', 'settings-menu', 'home-page', 'results-page',
+      'search-form', 'search-input', 'results-search-form', 'results-search-input',
+      'loading-indicator', 'error-message', 'error-text', 'marketplace-tabs',
+      'search-results', 'no-results', 'exclude-word-input', 'add-exclude-word',
+      'exclude-words-list', 'max-size-dropdown', 'max-size-btn', 'max-size-list',
+      'main-search-button', 'second-search-button', 'search-time', 'search-tags'
+    ];
+    ids.forEach(id => {
+      this.#elements[id] = document.getElementById(id);
+    });
+    this.#elements.filterCheckboxes = document.querySelectorAll('#settings-menu .filter-checkbox');
+    this.#elements.tabButtons = document.querySelectorAll('.tab-button');
+    this.#elements.resultsLogo = document.querySelector('.results-logo');
+    this.#elements.maxSizeOptionEls = document.querySelectorAll('#max-size-list .max-size-option');
+  }
+
+  #bindEvents() {
+    this.#elements['settings-button']?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.#elements['settings-menu'].classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!this.#elements['settings-menu']?.contains(e.target) && e.target !== this.#elements['settings-button']) {
+        this.#elements['settings-menu']?.classList.add('hidden');
+      }
+      if (!this.#elements['max-size-dropdown']?.contains(e.target)) {
+        this.#elements['max-size-list']?.classList.remove('open');
+        this.#elements['max-size-btn']?.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    this.#elements.filterCheckboxes?.forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        const filter = e.target.dataset.filter;
+        this.#filters[filter] = e.target.checked;
+        this.#updateUrlParams();
+      });
+    });
+
+    this.#elements['add-exclude-word']?.addEventListener('click', () => this.#addExcludeWord());
+    this.#elements['exclude-word-input']?.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        this.#addExcludeWord();
+      }
+    });
+
+    this.#elements['exclude-words-list']?.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        e.stopPropagation();
+        const word = e.target.dataset.word;
+        this.#removeExcludeWord(word);
+      }
+    });
+
+    this.#elements['search-form']?.addEventListener('submit', (e) => this.#handleSearchSubmit(e, this.#elements['search-input']));
+    this.#elements['results-search-form']?.addEventListener('submit', (e) => this.#handleSearchSubmit(e, this.#elements['results-search-input']));
+
+    this.#elements.tabButtons?.forEach(button => {
+      button.addEventListener('click', () => {
+        this.#switchMarketplace(button.dataset.marketplace);
+      });
+    });
+
+    this.#elements.resultsLogo?.addEventListener('click', () => {
+      this.#elements['home-page'].scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
+  #handleSearchSubmit(event, inputElement) {
+    event.preventDefault();
+    const query = inputElement.value.trim();
+    if (query) {
+      this.#elements['main-search-button'].disabled = true;
+      this.#elements['second-search-button'].disabled = true;
+      this.#elements['search-time']?.classList.add('hidden');
+      this.#elements['search-tags']?.classList.add('hidden');
+      this.performSearch(query);
+    }
+  }
+
+  #animateTitle() {
+    const title = this.#elements['home-page']?.querySelector('h1');
+    if (!title) return;
+
+    const text = title.innerText.trim();
+    title.innerHTML = '';
+
+    text.split('').forEach((char, index) => {
+        const span = document.createElement('span');
+        span.innerText = char;
+        span.className = 'letter';
+        span.style.animationDelay = `${index * 0.12}s`;
+        title.appendChild(span);
+    });
+  }
+
+  #initMaxSizeDropdown() {
+    const { 'max-size-btn': btn, 'max-size-list': list, maxSizeOptionEls: options } = this.#elements;
+    if (!btn || !list) return;
+
+    btn.childNodes[0].nodeValue = `${this.#maxSize} `;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = list.classList.toggle('open');
+      btn.setAttribute('aria-expanded', isOpen);
+    });
+
+    options.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.#maxSize = parseInt(option.dataset.value, 10);
+        btn.childNodes[0].nodeValue = `${this.#maxSize} `;
+        this.#updateUrlParams();
+        list.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  #applyDefaultUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: String(FindlyWeb.#DEFAULT_MAX_SIZE) };
+    let needsUpdate = false;
+
+    for (const key in defaults) {
+      if (!params.has(key)) {
+        params.set(key, defaults[key]);
+        needsUpdate = true;
+      }
+    }
+
+    if (needsUpdate) {
+      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+    }
+  }
+
+  #restoreStateFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    this.#filters.onlyNew = params.get('on') === 'on';
+    this.#filters.nameFilter = params.get('nf') === 'on';
+    this.#filters.priceFilter = params.get('pf') === 'on';
+    this.#filters.excludeWords = params.get('ew')?.split('|').filter(Boolean) ?? [];
+
+    const ms = parseInt(params.get('ms'), 10);
+    this.#maxSize = this.#maxSizeOptions.includes(ms) ? ms : FindlyWeb.#DEFAULT_MAX_SIZE;
+
+    this.#elements.filterCheckboxes.forEach(cb => {
+      cb.checked = this.#filters[cb.dataset.filter];
+    });
+    this.#renderExcludeWords();
+  }
+
+  #updateUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    params.set('on', this.#filters.onlyNew ? 'on' : 'off');
+    params.set('nf', this.#filters.nameFilter ? 'on' : 'off');
+    params.set('pf', this.#filters.priceFilter ? 'on' : 'off');
+    params.set('ms', this.#maxSize);
+
+    if (this.#filters.excludeWords.length > 0) {
+      params.set('ew', this.#filters.excludeWords.join('|'));
+    } else {
+      params.delete('ew');
+    }
+    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
+  }
+
+  #addExcludeWord() {
+    const input = this.#elements['exclude-word-input'];
+    const word = input.value.trim();
+    if (word && !this.#filters.excludeWords.includes(word)) {
+      this.#filters.excludeWords.push(word);
+      this.#renderExcludeWords();
+      this.#updateUrlParams();
+    }
+    input.value = '';
+  }
+
+  #removeExcludeWord(word) {
+    this.#filters.excludeWords = this.#filters.excludeWords.filter(w => w !== word);
+    this.#renderExcludeWords();
+    this.#updateUrlParams();
+  }
+
+  #renderExcludeWords() {
+    const list = this.#elements['exclude-words-list'];
+    if (!list) return;
+    list.innerHTML = '';
+    this.#filters.excludeWords.forEach(word => {
+      const chip = document.createElement('span');
+      chip.className = 'exclude-word-chip';
+      chip.textContent = word;
+      const btn = document.createElement('button');
+      btn.innerHTML = '&times;';
+      btn.title = 'Удалить';
+      btn.dataset.word = word;
+      chip.appendChild(btn);
+      list.appendChild(chip);
+    });
+  }
+
+  async performSearch(query) {
+    if (!query) {
+      this.#showError('Введите поисковый запрос');
+      return;
+    }
+
+    const startTime = performance.now();
+    this.#currentQuery = query;
+
+    this.#showResultsPage();
+    // === ВОССТАНОВЛЕНА ПЛАВНАЯ ПРОКРУТКА ===
+    this.#elements['results-page']?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    this.#showLoading();
+    this.#hideError();
+    this.#hideResults();
+
+    this.#elements['search-input'].value = query;
+    this.#elements['results-search-input'].value = query;
+
+    try {
+      const results = await this.#fetchSearchResults(query);
+      const searchDuration = performance.now() - startTime;
+
+      this.#displaySearchTime(searchDuration);
+      this.#displaySearchTags();
+      this.#searchResults = results;
+      this.#displayResults(results);
+    } catch (error) {
+      console.error('Search error:', error);
+      let errorMessage = 'Произошла ошибка во время поиска.';
+      if (error.name === 'AbortError') {
+        errorMessage = 'Поиск занял слишком много времени (таймаут).';
+      } else if (error.message.includes('Failed to fetch')) {
+        errorMessage = `Не удается подключиться к серверу. Убедитесь, что API доступен по адресу ${this.#apiBaseUrl}.`;
+      }
+      this.#showError(errorMessage);
+    } finally {
+      this.#elements['main-search-button'].disabled = false;
+      this.#elements['second-search-button'].disabled = false;
+      this.#hideLoading();
+    }
+  }
+
+  async #fetchSearchResults(query) {
+    const url = new URL(this.#apiBaseUrl + this.#searchEndpoint);
+    const params = {
+      q: query,
+      ms: this.#maxSize,
+      on: this.#filters.onlyNew ? 'on' : 'off',
+      nf: this.#filters.nameFilter ? 'on' : 'off',
+      pf: this.#filters.priceFilter ? 'on' : 'off'
+    };
+    Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
+
+    if (this.#filters.excludeWords.length > 0) {
+      url.searchParams.set('ew', this.#filters.excludeWords.join('|'));
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), FindlyWeb.#SEARCH_TIMEOUT);
+
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return await response.json();
+    } finally  {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  #displayResults(results) {
+    if (!results?.products_data) {
+      this.#showError('Неверный формат ответа от сервера');
+      return;
+    }
+
+    const { products_data } = results;
+    let hasAnyResults = false;
+
+    const visibleMarketplaces = [];
+
+    this.#marketplaces.forEach(mp => {
+      const products = products_data[mp] || [];
+      const count = products.length;
+      const tabElement = document.querySelector(`[data-marketplace="${mp}"]`);
+      const countElement = document.getElementById(`count-${mp}`);
+
+      if (tabElement) {
+          tabElement.classList.toggle('hidden', count === 0);
+      }
+      if (countElement) {
+          countElement.textContent = count > 0 ? count : '';
+      }
+
+      if (count > 0) {
+        hasAnyResults = true;
+        visibleMarketplaces.push(mp);
+        this.#renderMarketplaceProducts(mp, products);
+      }
+    });
+
+    if (hasAnyResults) {
+      this.#showResultsContainer();
+      const firstVisible = visibleMarketplaces[0] ?? this.#marketplaces[0];
+      this.#switchMarketplace(firstVisible);
+    } else {
+      this.#showNoResults();
+    }
+  }
+
+  #renderMarketplaceProducts(marketplace, products) {
+    const container = document.getElementById(`products-${marketplace}`);
+    if (!container) return;
+    container.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    products.forEach(product => fragment.appendChild(this.#createProductCard(product)));
+    container.appendChild(fragment);
+  }
+
+  #createProductCard(product) {
+    const card = document.createElement('a');
+    card.className = 'product-card';
+    card.href = product.link || '#';
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+
+    card.innerHTML = `
+      <div class="product-image">
+        <img src="${product.image ?? ''}" alt="${product.name ?? 'Товар'}" onerror="this.parentElement.innerHTML = 'Изображение недоступно';">
+      </div>
+      <div class="product-info">
+        <div class="product-title">${product.name ?? 'Название товара'}</div>
+        <div class="product-price">${product.price ?? 'Цена не указана'} BYN</div>
+      </div>
+    `;
+    if (!product.image) {
+        card.querySelector('.product-image').innerHTML = 'Изображение недоступно';
+    }
+    return card;
+  }
+
+  #displaySearchTime(duration) {
+    const el = this.#elements['search-time'];
+    if (!el) return;
+    el.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
+    el.classList.remove('hidden');
+  }
+
+  #displaySearchTags() {
+    const tagsContainer = this.#elements['search-tags'];
+    if(!tagsContainer) return;
+
+    const tags = [];
+    if (this.#filters.onlyNew) tags.push('Только новые');
+    if (this.#filters.priceFilter) tags.push('Фильтр по цене');
+    if (this.#filters.nameFilter) tags.push('Фильтр по названию');
+
+    tagsContainer.innerHTML = '';
+    tags.forEach(tag => {
+      const tagEl = document.createElement('span');
+      tagEl.className = 'search-tag';
+      tagEl.textContent = tag;
+      tagsContainer.appendChild(tagEl);
+    });
+    tagsContainer.classList.remove('hidden');
+  }
+
+  #switchMarketplace(marketplace) {
+    this.#currentMarketplace = marketplace;
+
+    this.#elements.tabButtons.forEach(button => {
+      button.classList.toggle('active', button.dataset.marketplace === marketplace);
+    });
+
+    document.querySelectorAll('.marketplace-results').forEach(container => {
+      container.classList.toggle('active', container.id === `results-${marketplace}`);
+    });
+  }
+
+  #showResultsPage() { this.#elements['results-page']?.classList.remove('hidden'); }
+  #showLoading() { this.#elements['loading-indicator']?.classList.remove('hidden'); }
+  #hideLoading() { this.#elements['loading-indicator']?.classList.add('hidden'); }
+  #showError(message) {
+    if (this.#elements['error-text']) this.#elements['error-text'].textContent = message;
+    this.#elements['error-message']?.classList.remove('hidden');
+  }
+  #hideError() { this.#elements['error-message']?.classList.add('hidden'); }
+  #showResultsContainer() {
+    this.#elements['marketplace-tabs']?.classList.remove('hidden');
+    this.#elements['search-results']?.classList.remove('hidden');
+    this.#elements['no-results']?.classList.add('hidden');
+  }
+  #hideResults() {
+    this.#elements['marketplace-tabs']?.classList.add('hidden');
+    this.#elements['search-results']?.classList.add('hidden');
+    this.#elements['no-results']?.classList.add('hidden');
+  }
+  #showNoResults() {
+    this.#elements['marketplace-tabs']?.classList.add('hidden');
+    this.#elements['search-results']?.classList.add('hidden');
+    this.#elements['no-results']?.classList.remove('hidden');
+  }
+}
+
+class ThemeSwitcher {
+  #toggleBtn;
+
+  constructor() {
+    this.#toggleBtn = document.getElementById('theme-toggle');
+    this.#initTheme();
+    this.#bindEvents();
+  }
+
+  #initTheme() {
     const savedTheme = localStorage.getItem('theme') ||
       (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     document.documentElement.setAttribute('data-theme', savedTheme);
   }
 
-  bindEvents() {
-    this.toggleBtn.addEventListener('click', () => {
+  #bindEvents() {
+    this.#toggleBtn?.addEventListener('click', () => {
       const currentTheme = document.documentElement.getAttribute('data-theme');
       const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
     });
   }
 }
 
-new ThemeSwitcher();
-
-// Инициализация приложения
 window.addEventListener('DOMContentLoaded', () => {
-    window.findlyWeb = new FindlyWeb();
+  new ThemeSwitcher();
+  window.findlyWeb = new FindlyWeb();
 });

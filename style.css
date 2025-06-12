@@ -371,7 +371,6 @@ pre code {
     font-weight: 500;
     line-height: 1.5;
     cursor: pointer;
-    transition: all var(--duration-normal) var(--ease-standard);
     border: none;
     text-decoration: none;
     position: relative;
@@ -744,7 +743,6 @@ select.form-control {
     border-radius: var(--radius-full);
     border: 1px solid var(--color-border);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--duration-normal) var(--ease-standard);
 }
 
 .search-form:focus-within {
