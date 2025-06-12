@@ -108,6 +108,20 @@ class FindlyWeb {
   #handleSearchSubmit(event, inputElement) {
     event.preventDefault();
     const query = inputElement.value.trim();
+
+    if (this.#filters.nameFilter && this.#filters.excludeWords.length > 0) {
+      const queryWords = query.toLowerCase().split(/\s+/);
+      const excludeWordsLower = this.#filters.excludeWords.map(w => w.toLowerCase());
+      const forbiddenWord = queryWords.find(qw => excludeWordsLower.includes(qw));
+
+      if (forbiddenWord) {
+        this.#hideResults();
+        this.#showError(`The query cannot contain the exception word "${forbiddenWord}", because "Filter by name" is enabled.`);
+        this.#elements['results-page']?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+    }
+
     if (query) {
       this.#elements['main-search-button'].disabled = true;
       this.#elements['second-search-button'].disabled = true;
@@ -269,11 +283,11 @@ class FindlyWeb {
       this.#displayResults(results);
     } catch (error) {
       console.error('Search error:', error);
-      let errorMessage = 'Произошла ошибка во время поиска.';
+      let errorMessage = 'Error while searching';
       if (error.name === 'AbortError') {
-        errorMessage = 'Поиск занял слишком много времени (таймаут).';
+        errorMessage = 'Timeout';
       } else if (error.message.includes('Failed to fetch')) {
-        errorMessage = `Не удается подключиться к серверу. Убедитесь, что API доступен по адресу ${this.#apiBaseUrl}.`;
+        errorMessage = `Unable to connect to the server at ${this.#apiBaseUrl}`;
       }
       this.#showError(errorMessage);
     } finally {

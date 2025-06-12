@@ -469,20 +469,6 @@ select.form-control {
     padding-right: var(--space-32);
 }
 
-@media (prefers-color-scheme: dark) {
-    select.form-control {
-        background-image: var(--select-caret-dark);
-    }
-}
-
-[data-color-scheme="dark"] select.form-control {
-    background-image: var(--select-caret-dark);
-}
-
-[data-color-scheme="light"] select.form-control {
-    background-image: var(--select-caret-light);
-}
-
 .form-label {
     display: block;
     margin-bottom: var(--space-8);
@@ -830,7 +816,7 @@ select.form-control {
 }
 
 .loading-indicator {
-    margin-top: 20%;
+    margin-top: 30vh;
     text-align: center;
 }
 
@@ -855,6 +841,7 @@ select.form-control {
 
 .error-message {
     text-align: center;
+    margin-top: 30vh;
     padding: var(--space-24);
 }
 
