@@ -135,17 +135,14 @@
 <button class="settings-button" id="settings-button" title="Настройки поиска">
   <i class="fas fa-cog"></i>
 </button>
+
 <div class="settings-menu hidden" id="settings-menu">
   <div class="settings-section">
     <h4>Search params</h4>
-    <label>
-      <input class="filter-checkbox" data-filter="onlyNew" type="checkbox">Only new products</label>
-    <label>
-      <input class="filter-checkbox" data-filter="nameFilter" type="checkbox">Filter by name</label>
-    <label>
-      <input class="filter-checkbox" data-filter="priceFilter" type="checkbox">
-      Filter by price
-    </label>
+    <label><input class="filter-checkbox" data-filter="onlyNew" type="checkbox">Only new products</label>
+    <label><input class="filter-checkbox" data-filter="nameFilter" type="checkbox">Filter by name</label>
+    <label><input class="filter-checkbox" data-filter="priceFilter" type="checkbox">Filter by price</label>
+
     <div class="custom-select" id="max-size-dropdown">
       <label for="max-size-btn">Size of products:</label>
       <button aria-expanded="false" aria-haspopup="listbox" class="max-size-btn" id="max-size-btn" type="button">
@@ -159,6 +156,7 @@
         <li class="max-size-option" data-value="40" role="option">40</li>
       </ul>
     </div>
+
     <label>Exclude words:</label>
     <div class="exclude-words-ui">
       <input id="exclude-word-input" placeholder="Enter word" type="text" />
