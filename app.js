@@ -107,7 +107,7 @@ class FindlyWeb {
     });
   }
 
-  #handleSearchSubmit(event, inputElement) {
+  async #handleSearchSubmit(event, inputElement) {
     event.preventDefault();
     const query = inputElement.value.trim();
 
@@ -131,7 +131,7 @@ class FindlyWeb {
     this.#elements['second-search-button'].disabled = true;
     this.#elements['search-time']?.classList.add('hidden');
     this.#elements['search-tags']?.classList.add('hidden');
-    this.performSearch(query);
+    await this.performSearch(query);
   }
 
   #animateTitle() {
@@ -212,7 +212,7 @@ class FindlyWeb {
     params.set('on', this.#filters.onlyNew ? 'on' : 'off');
     params.set('nf', this.#filters.nameFilter ? 'on' : 'off');
     params.set('pf', this.#filters.priceFilter ? 'on' : 'off');
-    params.set('ms', this.#maxSize);
+    params.set('ms', this.#maxSize.toString());
 
     if (this.#filters.excludeWords.length > 0) {
       params.set('ew', this.#filters.excludeWords.join('|'));
@@ -225,12 +225,16 @@ class FindlyWeb {
   #addExcludeWord() {
     const input = this.#elements['exclude-word-input'];
     const word = input.value.trim();
-    if (this.#filters.excludeWords.length >= FindlyWeb.#MAX_EXCLUDE_WORDS) {
-      this.#showToast(`Exception-word limit reached`, 2000);
+    if (!word){
+      this.#showToast('Exclude word cannot be empty', 1500);
+      return
+    } else if (this.#filters.excludeWords.includes(word)){
+      this.#showToast('Excluded word has already been added', 1500)
+    } else if (this.#filters.excludeWords.length >= FindlyWeb.#MAX_EXCLUDE_WORDS) {
+      this.#showToast(`Exclude word limit reached`, 2000);
       input.value = '';
       return;
-    }
-    if (word && !this.#filters.excludeWords.includes(word)) {
+    } else {
       this.#filters.excludeWords.push(word);
       this.#renderExcludeWords();
       this.#updateUrlParams();
