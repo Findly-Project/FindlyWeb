@@ -6,6 +6,7 @@ class FindlyWeb {
   static #DEFAULT_MAX_SIZE = 20;
   static #SEARCH_TIMEOUT = 20000;
   static #MAX_EXCLUDE_WORDS = 5;
+  static #VALIDATION_REGEX = /^[a-zA-Zа-яА-Я0-9- ]*$/;
 
   #apiBaseUrl = FindlyWeb.#API_BASE_URL;
   #searchEndpoint = FindlyWeb.#SEARCH_ENDPOINT;
@@ -113,6 +114,11 @@ class FindlyWeb {
 
     if (!query){
       this.#showToast('Query cannot be empty', 2000)
+      return
+    }
+
+    if (!FindlyWeb.#VALIDATION_REGEX.test(query)){
+      this.#showToast('The request can contain only numbers and letters', 2000)
       return
     }
 

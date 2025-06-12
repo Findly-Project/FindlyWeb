@@ -1018,6 +1018,10 @@ select.form-control {
         right: 24% !important;
     }
 
+    .toast-notification{
+        padding: 6px 12px !important;
+    }
+
     .search-tags {
         position: fixed;
     }
@@ -1118,8 +1122,8 @@ select.form-control {
 
 .settings-button {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 13px;
+    right: 13px;
     background: none;
     border: none;
     cursor: pointer;
@@ -1341,6 +1345,8 @@ select.form-control {
   z-index: 9999;
   opacity: 0;
   pointer-events: none;
+  width: max-content;
+  max-width: 70vw;
   transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
