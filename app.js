@@ -5,7 +5,8 @@ class FindlyWeb {
   static #DEFAULT_MAX_SIZE = 20;
   static #SEARCH_TIMEOUT = 20000;
   static #MAX_EXCLUDE_WORDS = 5;
-  static #VALIDATION_REGEX = /^[a-zA-Zа-яА-Я0-9- ]*$/;
+  static #QUERY_VALIDATION_REGEX = /^[a-zA-Zа-яА-Я0-9- ]*$/;
+  static #EXCLUDE_WORD_VALIDATION_REGEX = /^[a-zA-Zа-яА-Я0-9]*$/;
 
   #apiBaseUrl = FindlyWeb.#API_BASE_URL;
   #searchEndpoint = FindlyWeb.#SEARCH_ENDPOINT;
@@ -74,6 +75,19 @@ class FindlyWeb {
       });
     });
 
+    const mainInput = this.#elements['search-input'];
+    const resultsInput = this.#elements['results-search-input'];
+
+    if (mainInput && resultsInput) {
+      mainInput.addEventListener('input', () => {
+        this.#syncSearchInputs(mainInput, resultsInput);
+      });
+
+      resultsInput.addEventListener('input', () => {
+        this.#syncSearchInputs(resultsInput, mainInput);
+      });
+    }
+
     this.#elements['add-exclude-word']?.addEventListener('click', () => this.#addExcludeWord());
     this.#elements['exclude-word-input']?.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
@@ -113,8 +127,13 @@ class FindlyWeb {
       return
     }
 
-    if (!FindlyWeb.#VALIDATION_REGEX.test(query)){
+    if (!FindlyWeb.#QUERY_VALIDATION_REGEX.test(query)){
       this.#showToast('The request can contain only numbers and letters', 2000)
+      return
+    }
+
+    if (query.length < 3 || query.length > 20){
+      this.#showToast('The request must be >=3 and <=20 characters', 2000);
       return
     }
 
@@ -188,12 +207,17 @@ class FindlyWeb {
     if (!word){
       this.#showToast('Exclude word cannot be empty', 1500);
       return
+    } else if (word.length > 8){
+      this.#showToast('Exclude word must be <=8 characters', 1500)
+      return
+    } else if (!FindlyWeb.#EXCLUDE_WORD_VALIDATION_REGEX.test(word)){
+      this.#showToast('Exclude word can contain only numbers and letters', 2000)
+      return
     } else if (this.#filters.excludeWords.includes(word)){
       this.#showToast('Excluded word has already been added', 1500)
+      return
     } else if (this.#filters.excludeWords.length >= FindlyWeb.#MAX_EXCLUDE_WORDS) {
       this.#showToast(`Exclude word limit reached`, 2000);
-      input.value = '';
-      return;
     } else {
       this.#filters.excludeWords.push(word);
       this.#renderExcludeWords();
@@ -222,6 +246,11 @@ class FindlyWeb {
       list.appendChild(chip);
     });
   }
+
+  #syncSearchInputs(source, target) {
+    target.value = source.value;
+  }
+
 
   async performSearch(query) {
     const startTime = performance.now();
@@ -299,7 +328,7 @@ class FindlyWeb {
 
   #displayResults(results) {
     if (!results?.products_data) {
-      this.#showError('Неверный формат ответа от сервера');
+      this.#showError('Invalid format of response from server');
       return;
     }
 
@@ -355,7 +384,7 @@ class FindlyWeb {
 
     card.innerHTML = `
       <div class="product-image">
-        <img src="${product.image ?? ''}" alt="${product.name ?? 'Товар'}" onerror="this.parentElement.innerHTML = 'Изображение недоступно';">
+        <img src="${product.image ?? ''}" alt="${product.name ?? 'Товар'}" onerror="this.parentElement.innerHTML = 'Image not available';">
       </div>
       <div class="product-info">
         <div class="product-title">${product.name ?? 'Название товара'}</div>
@@ -363,7 +392,7 @@ class FindlyWeb {
       </div>
     `;
     if (!product.image) {
-        card.querySelector('.product-image').innerHTML = 'Изображение недоступно';
+        card.querySelector('.product-image').innerHTML = 'Image not available';
     }
     return card;
   }
@@ -371,7 +400,7 @@ class FindlyWeb {
   #displaySearchTime(duration) {
     const el = this.#elements['search-time'];
     if (!el) return;
-    el.textContent = `Поиск занял: ${duration.toFixed(0)} мс`;
+    el.textContent = `Searching time: ${duration.toFixed(0)} мс`;
     el.classList.remove('hidden');
   }
 
@@ -380,9 +409,9 @@ class FindlyWeb {
     if(!tagsContainer) return;
 
     const tags = [];
-    if (this.#filters.onlyNew) tags.push('Только новые');
-    if (this.#filters.priceFilter) tags.push('Фильтр по цене');
-    if (this.#filters.nameFilter) tags.push('Фильтр по названию');
+    if (this.#filters.onlyNew) tags.push('Only new');
+    if (this.#filters.priceFilter) tags.push('Filter by price');
+    if (this.#filters.nameFilter) tags.push('Filter by name');
 
     tagsContainer.innerHTML = '';
     tags.forEach(tag => {

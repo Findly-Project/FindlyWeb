@@ -133,11 +133,11 @@
 }
 
 .sun {
-    color: #fff;
+    color: #cecece;
 }
 
 .moon {
-    color: #000;
+    color: #4a4a4a;
 }
 
 [data-theme="dark"] .sun {
@@ -146,6 +146,22 @@
 
 [data-theme="dark"] .moon {
     opacity: 0;
+}
+
+[data-theme="light"] .sun {
+    opacity: 0;
+}
+
+[data-theme="light"] .moon {
+    opacity: 1;
+}
+
+[data-theme="dark"] .settings-button {
+    color: #9e9b9b;
+}
+
+[data-theme="light"] .settings-button {
+    color: #4a4a4a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -1127,14 +1143,16 @@ select.form-control {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 26px;
-    color: var(--color-border);
+    font-size: 24px;
     z-index: 1000;
-    transition: color 0.2s;
 }
 
-.settings-button:hover {
-    color: var(--color-primary);
+.fas{
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.fas:hover {
+    transform: rotate(90deg);
 }
 
 .settings-menu {
