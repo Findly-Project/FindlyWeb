@@ -1,0 +1,26 @@
+{
+  "name": "findlyweb",
+  "version": "1.0.0",
+  "description": "Findly - Search once. Find everything.",
+  "keywords": [
+    "findly"
+  ],
+  "homepage": "https://github.com/koloideal/FindlyWeb#readme",
+  "bugs": {
+    "url": "https://github.com/koloideal/FindlyWeb/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/koloideal/FindlyWeb.git"
+  },
+  "license": "MIT",
+  "author": "kolo",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "dev"
+  },
+  "dependencies": {
+    "react": "^19.1.0"
+  }
+}
