@@ -2,7 +2,6 @@ class FindlyWeb {
   static #API_BASE_URL = 'http://192.168.196.105:8000';
   static #SEARCH_ENDPOINT = '/api/search';
   static #MARKETPLACES = ['MMG', 'Onliner', 'Kufar', '21vek'];
-  static #MAX_SIZE_OPTIONS = [10, 20, 30, 40];
   static #DEFAULT_MAX_SIZE = 20;
   static #SEARCH_TIMEOUT = 20000;
   static #MAX_EXCLUDE_WORDS = 5;
@@ -11,7 +10,6 @@ class FindlyWeb {
   #apiBaseUrl = FindlyWeb.#API_BASE_URL;
   #searchEndpoint = FindlyWeb.#SEARCH_ENDPOINT;
   #marketplaces = FindlyWeb.#MARKETPLACES;
-  #maxSizeOptions = FindlyWeb.#MAX_SIZE_OPTIONS;
 
   #toastTimeoutId = null;
   #currentQuery = '';
@@ -29,8 +27,7 @@ class FindlyWeb {
 
   constructor() {
     this.#initElements();
-    this.#applyDefaultUrlParams();
-    this.#restoreStateFromUrl();
+    this.#syncUiWithState();
     this.#bindEvents();
     this.#initMaxSizeDropdown();
     this.#animateTitle();
@@ -74,7 +71,6 @@ class FindlyWeb {
       checkbox.addEventListener('change', (e) => {
         const filter = e.target.dataset.filter;
         this.#filters[filter] = e.target.checked;
-        this.#updateUrlParams();
       });
     });
 
@@ -173,59 +169,17 @@ class FindlyWeb {
         e.stopPropagation();
         this.#maxSize = parseInt(option.dataset.value, 10);
         btn.childNodes[0].nodeValue = `${this.#maxSize} `;
-        this.#updateUrlParams();
         list.classList.remove('open');
         btn.setAttribute('aria-expanded', 'false');
       });
     });
   }
 
-  #applyDefaultUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    const defaults = { on: 'off', nf: 'off', pf: 'off', ms: String(FindlyWeb.#DEFAULT_MAX_SIZE) };
-    let needsUpdate = false;
-
-    for (const key in defaults) {
-      if (!params.has(key)) {
-        params.set(key, defaults[key]);
-        needsUpdate = true;
-      }
-    }
-
-    if (needsUpdate) {
-      window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-    }
-  }
-
-  #restoreStateFromUrl() {
-    const params = new URLSearchParams(window.location.search);
-    this.#filters.onlyNew = params.get('on') === 'on';
-    this.#filters.nameFilter = params.get('nf') === 'on';
-    this.#filters.priceFilter = params.get('pf') === 'on';
-    this.#filters.excludeWords = params.get('ew')?.split('|').filter(Boolean) ?? [];
-
-    const ms = parseInt(params.get('ms'), 10);
-    this.#maxSize = this.#maxSizeOptions.includes(ms) ? ms : FindlyWeb.#DEFAULT_MAX_SIZE;
-
+  #syncUiWithState() {
     this.#elements.filterCheckboxes.forEach(cb => {
       cb.checked = this.#filters[cb.dataset.filter];
     });
     this.#renderExcludeWords();
-  }
-
-  #updateUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    params.set('on', this.#filters.onlyNew ? 'on' : 'off');
-    params.set('nf', this.#filters.nameFilter ? 'on' : 'off');
-    params.set('pf', this.#filters.priceFilter ? 'on' : 'off');
-    params.set('ms', this.#maxSize.toString());
-
-    if (this.#filters.excludeWords.length > 0) {
-      params.set('ew', this.#filters.excludeWords.join('|'));
-    } else {
-      params.delete('ew');
-    }
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
   }
 
   #addExcludeWord() {
@@ -243,7 +197,6 @@ class FindlyWeb {
     } else {
       this.#filters.excludeWords.push(word);
       this.#renderExcludeWords();
-      this.#updateUrlParams();
     }
     input.value = '';
   }
@@ -251,7 +204,6 @@ class FindlyWeb {
   #removeExcludeWord(word) {
     this.#filters.excludeWords = this.#filters.excludeWords.filter(w => w !== word);
     this.#renderExcludeWords();
-    this.#updateUrlParams();
   }
 
   #renderExcludeWords() {
@@ -272,11 +224,6 @@ class FindlyWeb {
   }
 
   async performSearch(query) {
-    if (!query) {
-      this.#showError('Введите поисковый запрос');
-      return;
-    }
-
     const startTime = performance.now();
     this.#currentQuery = query;
 
@@ -316,31 +263,37 @@ class FindlyWeb {
 
   async #fetchSearchResults(query) {
     const url = new URL(this.#apiBaseUrl + this.#searchEndpoint);
-    const params = {
-      q: query,
-      ms: this.#maxSize,
-      on: this.#filters.onlyNew ? 'on' : 'off',
-      nf: this.#filters.nameFilter ? 'on' : 'off',
-      pf: this.#filters.priceFilter ? 'on' : 'off'
-    };
-    Object.keys(params).forEach(key => url.searchParams.set(key, params[key]));
 
-    if (this.#filters.excludeWords.length > 0) {
-      url.searchParams.set('ew', this.#filters.excludeWords.join('|'));
-    }
+    const payload = {
+        query: query,
+        max_size: this.#maxSize,
+        filters: {
+            only_new: this.#filters.onlyNew,
+            name_filter: this.#filters.nameFilter,
+            price_filter: this.#filters.priceFilter,
+            exclude_words: this.#filters.excludeWords
+        }
+    };
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), FindlyWeb.#SEARCH_TIMEOUT);
 
     try {
-      const response = await fetch(url, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return await response.json();
-    } finally  {
-      clearTimeout(timeoutId);
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+    } finally {
+        clearTimeout(timeoutId);
     }
   }
 
