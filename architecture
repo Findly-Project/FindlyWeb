@@ -1,0 +1,38 @@
+findly-app/
+├── public/
+│   ├── index.html         # Основной HTML-файл, куда будет монтироваться React
+│   └── fonts/             # Папка для ваших файлов шрифтов
+│       └── FKGroteskNeue.woff2
+├── src/
+│   ├── api/
+│   │   └── searchService.js # Логика отправки запросов к вашему API
+│   ├── assets/
+│   │   └── styles/
+│   │       └── main.css     # Ваши глобальные стили
+│   ├── components/
+│   │   ├── common/          # Переиспользуемые "глупые" компоненты
+│   │   │   ├── Button.jsx
+│   │   │   ├── Input.jsx
+│   │   │   ├── Spinner.jsx
+│   │   │   └── Toast.jsx
+│   │   └── layout/          # Компоненты для разметки (Header, Footer)
+│   │       └── Header.jsx
+│   ├── context/
+│   │   ├── SettingsContext.js # Контекст для фильтров и настроек поиска
+│   │   └── ThemeContext.js    # Контекст для управления темой (светлая/тёмная)
+│   ├── features/            # Основная логика, сгруппированная по "фичам"
+│   │   └── search/
+│   │       ├── HomePage.jsx     # Компонент домашней страницы
+│   │       ├── ResultsPage.jsx  # Компонент страницы результатов
+│   │       ├── components/      # Компоненты, специфичные для поиска
+│   │       │   ├── ProductCard.jsx
+│   │       │   ├── ResultsTabs.jsx
+│   │       │   └── SettingsPanel.jsx
+│   │       └── useSearch.js     # Кастомный хук с логикой поиска
+│   ├── hooks/
+│   │   └── useLocalStorage.js # Общий хук для работы с localStorage
+│   ├── App.jsx                # Главный компонент приложения, маршрутизация
+│   └── index.js               # Точка входа в приложение
+├── .gitignore
+├── package.json
+└── README.md
