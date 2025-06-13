@@ -27,6 +27,7 @@ class FindlyWeb {
   #elements = {};
 
   constructor() {
+    this.#loadStateFromLocalStorage();
     this.#initElements();
     this.#syncUiWithState();
     this.#bindEvents();
@@ -72,6 +73,7 @@ class FindlyWeb {
       checkbox.addEventListener('change', (e) => {
         const filter = e.target.dataset.filter;
         this.#filters[filter] = e.target.checked;
+        this.#saveStateToLocalStorage();
       });
     });
 
@@ -117,6 +119,24 @@ class FindlyWeb {
       this.#elements['home-page'].scrollIntoView({ behavior: 'smooth' });
     });
   }
+
+  #saveStateToLocalStorage() {
+    const state = {
+      maxSize: this.#maxSize,
+      filters: this.#filters,
+    };
+    localStorage.setItem('findlyAppState', JSON.stringify(state));
+  }
+
+  #loadStateFromLocalStorage() {
+    const savedStateJSON = localStorage.getItem('findlyAppState');
+    if (savedStateJSON) {
+      const savedState = JSON.parse(savedStateJSON);
+      this.#maxSize = savedState.maxSize ?? FindlyWeb.#DEFAULT_MAX_SIZE;
+      this.#filters = savedState.filters ?? { onlyNew: false, nameFilter: false, priceFilter: false, excludeWords: [] };
+    }
+  }
+
 
   async #handleSearchSubmit(event, inputElement) {
     event.preventDefault();
@@ -188,6 +208,7 @@ class FindlyWeb {
         e.stopPropagation();
         this.#maxSize = parseInt(option.dataset.value, 10);
         btn.childNodes[0].nodeValue = `${this.#maxSize} `;
+        this.#saveStateToLocalStorage();
         list.classList.remove('open');
         btn.setAttribute('aria-expanded', 'false');
       });
@@ -221,6 +242,7 @@ class FindlyWeb {
     } else {
       this.#filters.excludeWords.push(word);
       this.#renderExcludeWords();
+      this.#saveStateToLocalStorage();
     }
     input.value = '';
   }
@@ -228,6 +250,7 @@ class FindlyWeb {
   #removeExcludeWord(word) {
     this.#filters.excludeWords = this.#filters.excludeWords.filter(w => w !== word);
     this.#renderExcludeWords();
+    this.#saveStateToLocalStorage();
   }
 
   #renderExcludeWords() {
