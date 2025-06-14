@@ -1,20 +1,36 @@
-export function ProductCard({ product }) {
-  const { link, image, name, price } = product;
-  const defaultImageText = 'Изображение недоступно';
+import React from 'react';
+
+// Компонент принимает один проп - объект product
+const ProductCard = ({ product }) => {
+  // Проверка на наличие основных данных
+  if (!product) {
+    return null;
+  }
 
   return (
-    <a href={link || '#'} target="_blank" rel="noopener noreferrer" className="product-card">
+    <a
+      href={product.link || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="product-card"
+    >
       <div className="product-image">
-        {image ? (
-          <img src={image} alt={name || 'Товар'} onError={(e) => { e.target.parentElement.innerHTML = defaultImageText; }} />
+        {product.img_link ? (
+          <img src={product.img_link} alt={product.name || 'Product'} loading="lazy" />
         ) : (
-          defaultImageText
+          <span>No image</span>
         )}
       </div>
       <div className="product-info">
-        <div className="product-title">{name || 'Название товара'}</div>
-        <div className="product-price">{price || 'Цена не указана'} BYN</div>
+        <h3 className="product-title" title={product.name}>
+          {product.name || 'No title'}
+        </h3>
+        <p className="product-price">
+          {product.price ? `${product.price} BYN` : 'Price not specified'}
+        </p>
       </div>
     </a>
   );
-}
+};
+
+export default ProductCard;

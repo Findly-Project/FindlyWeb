@@ -1,18 +1,19 @@
 import React from 'react';
-import styles from './Button.module.css'; // Импортируем CSS модуль
 
-export function Button({ children, onClick, disabled = false, type = 'button', className = '' }) {
-  // Объединяем классы из модуля с любыми дополнительными классами, переданными через props
-  const buttonClasses = `${styles.button} ${className}`;
+// Универсальная кнопка со стилями из вашего style.css
+const Button = ({ children, onClick, className = '', type = 'button', disabled = false }) => {
+  const baseClass = 'btn';
 
   return (
     <button
       type={type}
-      className={buttonClasses}
+      className={`${baseClass} ${className}`}
       onClick={onClick}
       disabled={disabled}
     >
       {children}
     </button>
   );
-}
+};
+
+export default Button;

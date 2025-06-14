@@ -1,21 +1,37 @@
 import { useState, useEffect } from 'react';
 
-function getSavedValue(key, initialValue) {
-  const savedValue = JSON.parse(localStorage.getItem(key));
-  if (savedValue) return savedValue;
-  if (initialValue instanceof Function) return initialValue();
-
-  return initialValue;
-}
-
-export function useLocalStorage(key, initialValue) {
-  const [value, setValue] = useState(() => {
-    return getSavedValue(key, initialValue);
+/**
+ * Кастомный хук для синхронизации состояния с localStorage.
+ * @param {string} key - Ключ в localStorage.
+ * @param {*} initialValue - Начальное значение, если в localStorage ничего нет.
+ * @returns {[*, function]} - Возвращает состояние и функцию для его обновления.
+ */
+function useLocalStorage(key, initialValue) {
+  // Получаем начальное значение из localStorage или используем initialValue
+  const [storedValue, setStoredValue] = useState(() => {
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.error(error);
+      return initialValue;
+    }
   });
 
+  // useEffect для обновления localStorage при изменении состояния
   useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [value, key]);
+    try {
+      const valueToStore =
+        typeof storedValue === 'function'
+          ? storedValue(storedValue)
+          : storedValue;
+      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+    } catch (error) {
+      console.error(error);
+    }
+  }, [key, storedValue]);
 
-  return [value, setValue];
+  return [storedValue, setStoredValue];
 }
+
+export default useLocalStorage;
