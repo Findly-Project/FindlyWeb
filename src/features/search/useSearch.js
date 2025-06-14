@@ -11,8 +11,6 @@ export const useSearch = () => {
   const { maxSize, filters } = useSettings();
 
   const executeSearch = useCallback(async (query) => {
-    if (!query) return;
-
     setIsLoading(true);
     setError(null);
     setResults(null);

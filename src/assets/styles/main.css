@@ -708,6 +708,28 @@ select.form-control {
     src: url('/public/fonts/FKGroteskNeue.woff2') format('woff2');
 }
 
+.theme-toggle-button {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: var(--color-background);
+  color: var(--color-text);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1000;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle-button:hover {
+  transform: rotate(45deg);
+}
+
 .home-page {
     min-height: 100vh;
     display: flex;
@@ -1373,4 +1395,43 @@ select.form-control {
   transform: translate(-50%, 0);
   pointer-events: auto;
 }
+
+.settings-control-wrapper {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+}
+
+.settings-control-button {
+  background: var(--color-background);
+  color: var(--color-text);
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.settings-control-button:hover {
+  transform: rotate(45deg);
+}
+
+.settings-menu {
+  position: absolute; /* Меняем на absolute, чтобы позиционироваться относительно wrapper */
+  top: 55px; /* Сдвигаем вниз от кнопки */
+  right: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 18px 20px 14px 20px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  width: 240px;
+  z-index: 999;
+}
+
 

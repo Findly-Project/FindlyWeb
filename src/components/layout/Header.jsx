@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import SettingsPanel from '../../features/search/components/SettingsPanel';
+import Button from '../common/Button'
 
 // Иконка настроек в формате SVG для использования внутри компонента
 const SettingsIcon = () => (
@@ -43,13 +44,6 @@ const Header = ({ onSearch, initialQuery = '', searchTime, searchTags }) => {
               {`Done in ${(searchTime / 1000).toFixed(2)}s`}
             </div>
           )}
-
-          <div style={{ position: 'relative', marginLeft: 'auto' }}>
-            <button className="settings-button" onClick={() => setSettingsOpen(!isSettingsOpen)}>
-                <SettingsIcon />
-            </button>
-            {isSettingsOpen && <SettingsPanel />}
-          </div>
         </div>
 
         {searchTags && searchTags.length > 0 && (

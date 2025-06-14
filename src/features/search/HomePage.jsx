@@ -1,5 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Button from '../../components/common/Button';
+import ThemeToggleButton from '../../components/common/ThemeToggleButton'
+import SettingsControl from './components/SettingsControl'
+import { useToast } from '../../context/ToastContext';
+
 
 const AnimatedTitle = ({ text }) => {
     return (
@@ -15,34 +19,33 @@ const AnimatedTitle = ({ text }) => {
 
 const HomePage = ({ onSearch }) => {
   const [query, setQuery] = useState('');
-  const [error, setError] = useState('');
+  const { showToast } = useToast();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Валидация из вашего app.js
     const trimmedQuery = query.trim();
     if (!trimmedQuery) {
-        setError('Query cannot be empty');
+        showToast('Query cannot be empty');
         return;
     }
     if (!/^[a-zA-Zа-яА-Я0-9- ]*$/.test(trimmedQuery)) {
-        setError('The request can contain only numbers and letters');
+        showToast('The request can contain only numbers and letters');
         return;
     }
     if (trimmedQuery.length < 3 || trimmedQuery.length > 20) {
-        setError('The request must be between 3 and 20 characters');
+        showToast('The request must be between 3 and 20 characters');
         return;
     }
-    setError(''); // Сброс ошибки
     onSearch(trimmedQuery);
   };
 
   return (
     <main className="home-page">
+      <ThemeToggleButton />
+      <SettingsControl />
       <div className="home-container">
-        <AnimatedTitle text="Findly" />
-        <p>Unified search across popular marketplaces</p>
-
+        <AnimatedTitle text="FindlyWeb" />
         <div className="search-container">
           <form className="search-form" onSubmit={handleSubmit}>
             <input
@@ -57,7 +60,6 @@ const HomePage = ({ onSearch }) => {
               Search
             </Button>
           </form>
-          {error && <p style={{ color: 'var(--color-error)', marginTop: '8px' }}>{error}</p>}
         </div>
       </div>
     </main>
