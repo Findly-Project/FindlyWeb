@@ -1,5 +1,5 @@
 class FindlyWeb {
-  static #API_BASE_URL = 'http://192.168.196.105:8000';
+  static #API_BASE_URL = 'http://192.168.0.112:8000';
   static #SEARCH_ENDPOINT = '/api/search';
   static #MARKETPLACES = ['MMG', 'Onliner', 'Kufar', '21vek'];
   static #DEFAULT_MAX_SIZE = 20;
@@ -31,7 +31,6 @@ class FindlyWeb {
     this.#initElements();
     this.#syncUiWithState();
     this.#bindEvents();
-    this.#initMaxSizeDropdown();
     this.#animateTitle();
   }
 
@@ -63,11 +62,13 @@ class FindlyWeb {
       if (!this.#elements['settings-menu']?.contains(e.target) && e.target !== this.#elements['settings-button']) {
         this.#elements['settings-menu']?.classList.add('hidden');
       }
-      if (!this.#elements['max-size-dropdown']?.contains(e.target)) {
-        this.#elements['max-size-list']?.classList.remove('open');
-        this.#elements['max-size-btn']?.setAttribute('aria-expanded', 'false');
-      }
     });
+
+    this.#elements['max-size-select']?.addEventListener('change', (e) => {
+      this.#maxSize = parseInt(e.target.value, 10);
+      this.#saveStateToLocalStorage();
+    });
+
 
     this.#elements.filterCheckboxes?.forEach(checkbox => {
       checkbox.addEventListener('change', (e) => {
@@ -191,35 +192,14 @@ class FindlyWeb {
     });
   }
 
-  #initMaxSizeDropdown() {
-    const { 'max-size-btn': btn, 'max-size-list': list, maxSizeOptionEls: options } = this.#elements;
-    if (!btn || !list) return;
-
-    btn.childNodes[0].nodeValue = `${this.#maxSize} `;
-
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = list.classList.toggle('open');
-      btn.setAttribute('aria-expanded', isOpen);
-    });
-
-    options.forEach(option => {
-      option.addEventListener('click', (e) => {
-        e.stopPropagation();
-        this.#maxSize = parseInt(option.dataset.value, 10);
-        btn.childNodes[0].nodeValue = `${this.#maxSize} `;
-        this.#saveStateToLocalStorage();
-        list.classList.remove('open');
-        btn.setAttribute('aria-expanded', 'false');
-      });
-    });
-  }
-
   #syncUiWithState() {
     this.#elements.filterCheckboxes.forEach(cb => {
       cb.checked = this.#filters[cb.dataset.filter];
     });
     this.#renderExcludeWords();
+    if (this.#elements['max-size-select']) {
+      this.#elements['max-size-select'].value = this.#maxSize;
+    }
   }
 
   #addExcludeWord() {

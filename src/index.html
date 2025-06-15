@@ -144,19 +144,15 @@
     <label><input class="filter-checkbox" data-filter="nameFilter" type="checkbox">Filter by name</label>
     <label><input class="filter-checkbox" data-filter="priceFilter" type="checkbox">Filter by price</label>
 
-    <div class="custom-select" id="max-size-dropdown">
-      <label for="max-size-btn">Size of products:</label>
-      <button aria-expanded="false" aria-haspopup="listbox" class="max-size-btn" id="max-size-btn" type="button">
-        20
-        <span class="arrow">&#9662;</span>
-      </button>
-      <ul aria-labelledby="max-size-btn" class="max-size-list" id="max-size-list" role="listbox" tabindex="-1">
-        <li class="max-size-option" data-value="10" role="option">10</li>
-        <li class="max-size-option" data-value="20" role="option">20</li>
-        <li class="max-size-option" data-value="30" role="option">30</li>
-        <li class="max-size-option" data-value="40" role="option">40</li>
-      </ul>
-    </div>
+    <div class="custom-select">
+      <span>Size of products:</span>
+      <select id="max-size-select" class="form-control max-size-select">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+          <option value="40">40</option>
+      </select>
+  </div>
 
     <label>Exclude words:</label>
     <div class="exclude-words-ui">
