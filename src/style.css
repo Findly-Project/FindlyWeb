@@ -713,7 +713,7 @@ option {
 
 @font-face {
     font-family: 'FKGroteskNeue';
-    src: url('./FKGroteskNeue.woff2') format('woff2');
+    src: url('../fonts/FKGroteskNeue.woff2') format('woff2');
 }
 
 .home-page {
